@@ -1,43 +1,59 @@
+/* تنسيق الصفحة */
+body {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #f0f0f0;
+  font-family: Arial, sans-serif;
+}
+
+/* تنسيق الرقعة */
 .chessboard {
   display: grid;
-  grid-template-columns: repeat(8, 50px);
-  grid-template-rows: repeat(8, 50px);
-  width: 400px;
-  height: 400px;
-  border: 2px solid #000;
+  grid-template-columns: repeat(8, 60px); /* 8 أعمدة بعرض 60px */
+  grid-template-rows: repeat(8, 60px); /* 8 صفوف بارتفاع 60px */
+  border: 2px solid #333;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
 }
 
+/* تنسيق المربعات */
 .square {
-  width: 50px;
-  height: 50px;
   display: flex;
-  align-items: center;
   justify-content: center;
-  position: relative;
-}
-
-.white {
-  background-color: #f0d9b5;
-}
-
-.black {
-  background-color: #b58863;
-}
-
-.piece {
-  width: 40px;
-  height: 40px;
-  user-select: none;
+  align-items: center;
+  width: 60px;
+  height: 60px;
+  font-size: 24px;
   cursor: pointer;
 }
 
-.valid-move {
-  width: 10px;
-  height: 10px;
-  background-color: rgba(0, 255, 0, 0.5);
-  border-radius: 50%;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+/* تنسيق المربعات البيضاء */
+.square.white {
+  background-color: #f0d9b5;
 }
+
+/* تنسيق المربعات السوداء */
+.square.black {
+  background-color: #b58863;
+}
+
+/* تنسيق القطع */
+.piece {
+  font-size: 40px;
+  cursor: grab;
+  user-select: none; /* منع تحديد النص */
+}
+
+/* تنسيق الحركات الصالحة */
+.valid-move {
+  width: 20px;
+  height: 20px;
+  background-color: rgba(0, 255, 0, 0.5); /* لون أخضر شفاف */
+  border-radius: 50%; /* دائري */
+  position: absolute;
+}
+
+/* تنسيق رسالة Game Over */
