@@ -27,6 +27,7 @@ const Chessboard = () => {
     ['wp', 'wp', 'wp', 'wp', 'wp', 'wp', 'wp', 'wp'], // الصف 6 (البيادق البيضاء)
     ['wr', 'wn', 'wb', 'wq', 'wk', 'wb', 'wn', 'wr'], // الصف 7 (القطع البيضاء)
   ];
+  
 
   const [board, setBoard] = useState(initialPieces);
   const [selectedPiece, setSelectedPiece] = useState(null);
@@ -35,7 +36,7 @@ const Chessboard = () => {
   const [gameOver, setGameOver] = useState(false); // حالة انتهاء اللعبة
   const [hasKingMoved, setHasKingMoved] = useState(false); // تتبع تحركات الملك
   const [hasRookMoved, setHasRookMoved] = useState([false, false]); // تتبع تحركات القلعتين
-
+ 
   // دالة لتحديد لون الخلية
   const getSquareColor = (row, col) => {
     return (row + col) % 2 === 0 ? 'white' : 'black';
