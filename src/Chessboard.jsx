@@ -62,6 +62,8 @@ const Chessboard = () => {
 
   // دالة للتحقق مما إذا كان الملك في حالة كش
   const isInCheck = (board, kingPosition, enemyColor) => {
+    if (!kingPosition) return false;
+
     for (let row = 0; row < 8; row++) {
       for (let col = 0; col < 8; col++) {
         const piece = board[row][col];
@@ -87,7 +89,30 @@ const Chessboard = () => {
 
     // تحقق من أن الملك لا يمكنه الهروب
     const kingMoves = getValidMoves(kingPosition.row, kingPosition.col);
-    return kingMoves.length === 0;
+    if (kingMoves.length > 0) {
+      return false;
+    }
+
+    // تحقق من أن أي قطعة يمكنها حماية الملك
+    for (let row = 0; row < 8; row++) {
+      for (let col = 0; col < 8; col++) {
+        const piece = board[row][col];
+        if (piece && piece.startsWith(turn[0])) {
+          const moves = getValidMoves(row, col);
+          for (const move of moves) {
+            const newBoard = JSON.parse(JSON.stringify(board)); // نسخ اللوحة
+            newBoard[move.row][move.col] = piece;
+            newBoard[row][col] = '';
+            const newKingPosition = findKing(newBoard, turn === 'white' ? 'wk' : 'bk');
+            if (!isInCheck(newBoard, newKingPosition, enemyColor)) {
+              return false; // هناك حركة تنقذ الملك
+            }
+          }
+        }
+      }
+    }
+
+    return true; // كش مات
   };
 
   // دالة لتحديد الحركات الممكنة للقطعة
@@ -114,14 +139,11 @@ const Chessboard = () => {
     switch (piece[1]) {
       case 'p': // بيادق
         const direction = isWhite ? -1 : 1;
-        // حركة واحدة للأمام
         if (addMove(row + direction, col)) {
-          // حركة مزدوجة للأمام (الحركة الأولى)
           if ((isWhite && row === 6) || (!isWhite && row === 1)) {
             addMove(row + 2 * direction, col);
           }
         }
-        // الأكل بشكل قطري
         addMove(row + direction, col - 1);
         addMove(row + direction, col + 1);
         break;
@@ -171,7 +193,6 @@ const Chessboard = () => {
         break;
 
       case 'q': // ملكة
-        // حركة الفيل + حركة القلعة
         for (let i = 1; i < 8; i++) {
           if (!addMove(row + i, col + i)) break;
         }
@@ -209,11 +230,9 @@ const Chessboard = () => {
 
         // التبييت
         if (!hasKingMoved) {
-          // تبييت الجانب الملكي (اليمين)
           if (!hasRookMoved[1] && board[row][5] === '' && board[row][6] === '') {
             moves.push({ row, col: 6 });
           }
-          // تبييت الجانب الوزيري (اليسار)
           if (!hasRookMoved[0] && board[row][1] === '' && board[row][2] === '' && board[row][3] === '') {
             moves.push({ row, col: 2 });
           }
