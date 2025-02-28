@@ -1,8 +1,8 @@
 // Chessboard.js
 import { useState } from 'react';
 import './Chessboard.css';
-import { initialPieces, getPieceSymbol, getSquareColor } from '../utils/chessUtils';
-import { getValidMoves, isCheckmate, findKing } from '../logic/gameLogic';
+import { initialPieces, getPieceSymbol, getSquareColor } from './chessUtils';
+import { getValidMoves, isCheckmate, findKing } from './gameLogic';
 
 const Chessboard = () => {
   const [board, setBoard] = useState(initialPieces);
