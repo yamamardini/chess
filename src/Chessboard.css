@@ -1,59 +1,88 @@
-/* تنسيق الصفحة */
-body {
-  margin: 0;
-  padding: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  background-color: #f0f0f0;
-  font-family: Arial, sans-serif;
-}
-
-/* تنسيق الرقعة */
+/* تنسيق لوحة الشطرنج */
 .chessboard {
   display: grid;
-  grid-template-columns: repeat(8, 60px); /* 8 أعمدة بعرض 60px */
-  grid-template-rows: repeat(8, 60px); /* 8 صفوف بارتفاع 60px */
-  border: 2px solid #333;
-  box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+  grid-template-columns: repeat(8, 60px);
+  grid-template-rows: repeat(8, 60px);
+  width: 480px;
+  height: 480px;
+  position: absolute;
+  top: 15%;
+  left: 33%;
+  border: 4px solid #204a07;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5); /* إضافة ظل للوحة */
+  background-color: #f0f0f0; /* لون خلفية اللوحة */
 }
 
-/* تنسيق المربعات */
+/* تنسيق مربعات اللوحة */
 .square {
+  width: 60px;
+  height: 60px;
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 60px;
-  height: 60px;
-  font-size: 24px;
   cursor: pointer;
+  position: relative;
 }
 
-/* تنسيق المربعات البيضاء */
 .square.white {
-  background-color: #f0d9b5;
+  background-color: #eeeed2; /* لون المربعات البيضاء */
 }
 
-/* تنسيق المربعات السوداء */
 .square.black {
-  background-color: #b58863;
+  background-color: #769656; /* لون المربعات السوداء */
+}
+
+/* تأثير عند التمرير فوق المربعات */
+.square:hover {
+  filter: brightness(1.1); /* زيادة سطوع المربع */
 }
 
 /* تنسيق القطع */
 .piece {
-  font-size: 40px;
+  font-size: 48px;
   cursor: grab;
-  user-select: none; /* منع تحديد النص */
+  transition: transform 0.1s ease; /* إضافة حركة سلسة عند السحب */
 }
 
-/* تنسيق الحركات الصالحة */
+.piece:active {
+  cursor: grabbing;
+  transform: scale(1.1); /* تكبير القطعة قليلاً عند السحب */
+}
+
+/* تنسيق الحركات المسموحة */
 .valid-move {
+  position: absolute;
   width: 20px;
   height: 20px;
-  background-color: rgba(0, 255, 0, 0.5); /* لون أخضر شفاف */
-  border-radius: 50%; /* دائري */
-  position: absolute;
+  background-color: rgba(0, 255, 0, 0.5); /* لون الحركات الصحيحة */
+  border-radius: 50%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
-/* تنسيق رسالة Game Over */
+/* تنسيق إضافي للحركات المسموحة */
+.valid-move.capture {
+  background-color: rgba(255, 0, 0, 0.5); /* لون مختلف لحركات الأكل */
+}
+
+/* تنسيق رسالة انتهاء اللعبة */
+.game-over {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 20px;
+  border-radius: 10px;
+  font-size: 24px;
+  text-align: center;
+  z-index: 1000;
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.3); /* إضافة ظل للرسالة */
+}
+
+/* تنسيق إضافي للقطع المحددة */
+.square.selected {
+  background-color: rgba(255, 255, 0, 0.5); /* لون الخلية المحددة */
+}
