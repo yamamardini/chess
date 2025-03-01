@@ -36,7 +36,7 @@
 
 /* تنسيق المربعات السوداء */
 .square.black {
-  background-color: #769656;
+  background-color: #709749;
 }
 
 /* تأثير عند التمرير فوق المربعات */
@@ -95,9 +95,9 @@
 /* تنسيق الحركات المسموحة */
 .valid-move {
   position: absolute;
-  width: 20%;
-  height: 20%;
-  background-color: rgba(0, 255, 0, 0.5);
+  width: 40%;
+  height: 40%;
+  background-color: rgba(1, 36, 107, 0.744);
   border-radius: 50%;
   top: 50%;
   left: 50%;
@@ -179,6 +179,7 @@
     max-width: 80%; /* زيادة حجم الصورة على الشاشات الصغيرة */
   }
 
+ 
   .chessboard {
     width: 90vmin; /* حجم اللوحة */
     height: 90vmin;
