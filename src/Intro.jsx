@@ -13,7 +13,7 @@ const Intro = () => {
     <div>
       {!showChessboard ? (
         <div id="intro">
-          <img src="src/image/chess.png" />
+          <img src="./src/image/chess.png" />
           <button id="start-button" onClick={handleStartGame}>
           start
           </button>
