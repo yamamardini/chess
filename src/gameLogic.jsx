@@ -23,19 +23,31 @@ export const getValidMoves = (board, row, col) => {
 
   switch (piece[1]) {
     case 'p': // بيادق
-      const direction = isWhite ? -1 : 1;
-      if (addMove(row + direction, col)) {
-        if ((isWhite && row === 6) || (!isWhite && row === 1)) {
+    const direction = isWhite ? -1 : 1; // اتجاه الحركة (أعلى للبيض، أسفل للسود)
+  
+    // الحركة للأمام
+    if (board[row + direction][col] === '') {
+      addMove(row + direction, col);
+      // الحركة المزدوجة للأمام (الحركة الأولى فقط)
+      if ((isWhite && row === 6) || (!isWhite && row === 1)) {
+        if (board[row + 2 * direction][col] === '') {
           addMove(row + 2 * direction, col);
         }
       }
-      if (col > 0 && board[row + direction][col - 1].startsWith(enemyColor)) {
-        addMove(row + direction, col - 1);
-      }
-      if (col < 7 && board[row + direction][col + 1].startsWith(enemyColor)) {
-        addMove(row + direction, col + 1);
-      }
-      break;
+    }
+    // الأكل بشكل قطري
+    if (col > 0 && board[row + direction][col - 1].startsWith(enemyColor)) {
+      addMove(row + direction, col - 1);
+    }
+    if (col < 7 && board[row + direction][col + 1].startsWith(enemyColor)) {
+      addMove(row + direction, col + 1);
+    }
+  
+    // تحويل البيدق إلى وزير عند وصوله إلى آخر صف
+    if ((isWhite && row + direction === 0) || (!isWhite && row + direction === 7)) {
+      // يتم التحويل في دالة handleSquareClick
+    }
+    break;
 
     case 'n': // أحصنة
       const knightMoves = [
@@ -128,15 +140,12 @@ export const getValidMoves = (board, row, col) => {
 // دالة للتحقق من كش مات
 export const isCheckmate = (board, kingPosition, enemyColor) => {
   if (!kingPosition) return false;
-
   // تحقق من أن الملك تحت الكش
   const isKingInCheck = isCheck(board, kingPosition, enemyColor);
   if (!isKingInCheck) return false;
-
   // تحقق من أن الملك لا يمكنه الهروب
   const kingMoves = getValidMoves(board, kingPosition.row, kingPosition.col);
   if (kingMoves.length > 0) return false;
-
   // تحقق من أن لا يمكن لأي قطعة حماية الملك
   for (let row = 0; row < 8; row++) {
     for (let col = 0; col < 8; col++) {
