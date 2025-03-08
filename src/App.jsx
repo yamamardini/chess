@@ -1,10 +1,21 @@
-import Chessboard from './Intro.jsx'; // تأكد من المسار
-import './Chessboard.css'; // تأكد من المسار
+import React, { useState } from 'react';
+import Home from './Home';
+import Board from './Board';
 
 function App() {
+  const [gameStarted, setGameStarted] = useState(false);
+
+  const handleStartGame = () => {
+    setGameStarted(true);
+  };
+
   return (
     <div className="App">
-      <Chessboard />
+      {!gameStarted ? (
+        <Home onStartGame={handleStartGame} />
+      ) : (
+        <Board />
+      )}
     </div>
   );
 }
