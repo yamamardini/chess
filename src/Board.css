@@ -30,7 +30,7 @@
 }
 
 .square.dark {
-  background-color: #2c680a;
+  background-color: #434343;
 }
 
 .piece {
@@ -71,8 +71,7 @@
 }
 
 .king-in-check {
-  border: 1.5px solid red;
-  box-shadow: inset 0 0 0 2px red;
+  background-color: #760404 !important;
 }
 
 .promotion-modal {
