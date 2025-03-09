@@ -145,7 +145,7 @@
 
 .undo-button {
   position: absolute; /* تغيير من fixed إلى absolute */
-  top: 0; /* وضع الزر أعلى اللوحة */
+  top: 4%; /* وضع الزر أعلى اللوحة */
   right: -120px; /* وضع الزر على يمين اللوحة */
   padding: 10px 20px;
   font-size: 16px;
@@ -168,7 +168,7 @@
 
 .redo-button {
   position: absolute; /* تغيير من fixed إلى absolute */
-  top: 60px; /* وضع الزر أسفل زر التراجع */
+  top: 15%; /* وضع الزر أسفل زر التراجع */
   right: -120px; /* وضع الزر على يمين اللوحة */
   padding: 10px 20px;
   font-size: 16px;
@@ -195,6 +195,9 @@
       width: 90vw; /* عرض اللوحة يتناسب مع عرض الشاشة */
       height: 90vw; /* ارتفاع اللوحة يتناسب مع عرض الشاشة */
       margin: 20% auto; /* توسيط اللوحة */
+      position: absolute;
+      top: 15% ;
+      left: 4%;
   }
 
   .square {
@@ -229,13 +232,24 @@
       padding: 5px;
   }
 
-  .undo-button, .redo-button {
+  .undo-button {
       font-size: 3vw;
       padding: 5px 10px;
-      right: -80px; /* تعديل موقع الأزرار لتناسب الشاشات الصغيرة */
+      right: 80%;
+    position: absolute;
+    top: 115%;
+    left: 4%;
+
+
   }
 
+
   .redo-button {
-      top: 50px; /* تعديل موقع زر الإعادة ليكون أسفل زر التراجع */
+      font-size: 3vw;
+      padding: 5px 10px;
+      right: 80%;
+    position: absolute;
+    top: 125%;
+    left: 4%;
   }
 }
