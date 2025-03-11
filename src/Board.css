@@ -138,7 +138,7 @@
   cursor: pointer;
   transition: background-color 0.3s ease;
   position: absolute;
-  right: 46%;
+  right: 44%;
   top: 80%;
 }
 
@@ -260,7 +260,7 @@
 .start-button {
   position: absolute;
   top: 75%;
- right: 38%;
+ right: 34%;
 }
 
 

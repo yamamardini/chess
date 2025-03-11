@@ -8,7 +8,7 @@ const Home = ({ onStartGame }) => {
         <span className="knight">♘</span>
       </div>
       <button className="start-button" onClick={onStartGame}>
-      start
+     one vs one
       </button>
     </div>
   );
