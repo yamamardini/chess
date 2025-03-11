@@ -126,6 +126,10 @@
   font-size: 400px; /* حجم اللوجو ثابت */
   color: #ffffff;
   align-items: center;
+  position: absolute;
+  top:15%; /* يضع العنصر عند 80% من الأعلى */
+  left: 50%; /* يضع العنصر في المنتصف أفقيًا */
+  transform: translateX(-50%); /* يعيد ضبط العنصر ليكون في المنتصف بدقة */
 }
 
 .start-button {
@@ -138,8 +142,9 @@
   cursor: pointer;
   transition: background-color 0.3s ease;
   position: absolute;
-  right: 44%;
-  top: 80%;
+    top: 80%; /* يضع العنصر عند 80% من الأعلى */
+    left: 50%; /* يضع العنصر في المنتصف أفقيًا */
+    transform: translateX(-50%); /* يعيد ضبط العنصر ليكون في المنتصف بدقة */
 }
 
 .start-button:hover {
@@ -256,12 +261,11 @@
     left: 4%;
   }
 
+  .knight {
+      position: absolute;
+      top: 20%; /* يضع العنصر عند 80% من الأعلى */
+      left: 50%; /* يضع العنصر في المنتصف أفقيًا */
+      transform: translateX(-50%); /* يعيد ضبط العنصر ليكون في المنتصف بدقة */
+  }
   
-.start-button {
-  position: absolute;
-  top: 75%;
- right: 34%;
-}
-
-
 }
