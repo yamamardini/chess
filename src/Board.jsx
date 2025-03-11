@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import './Board.css';
 import { isCheck, isCheckmate, isMoveValid } from './Checkmate';
 import Pieces from './Pieces';
@@ -42,6 +42,7 @@ const Board = () => {
   const [promotion, setPromotion] = useState(null); // { from: [row, col], to: [row, col] }
   const [moveHistory, setMoveHistory] = useState([]); // تخزين تاريخ الحركات
   const [redoHistory, setRedoHistory] = useState([]); // تخزين الحركات التي تم التراجع عنها
+
 
   useEffect(() => {
     if (isCheckmate(board, currentPlayer)) {
@@ -182,7 +183,6 @@ const Board = () => {
     const isSelected = selectedPiece && selectedPiece[0] === row && selectedPiece[1] === col;
     const isAvailable = availableMoves.some(([r, c]) => r === row && c === col);
     const isKingInCheck = kingInCheck && kingInCheck[0] === row && kingInCheck[1] === col;
-
     return (
       <div
         key={`${row}-${col}`}

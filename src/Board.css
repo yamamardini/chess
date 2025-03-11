@@ -34,7 +34,7 @@
 }
 
 .piece {
-  font-size: 55px;
+  font-size: 60px;
   cursor: pointer;
 }
 
@@ -137,6 +137,9 @@
   border-radius: 10px;
   cursor: pointer;
   transition: background-color 0.3s ease;
+  position: absolute;
+  right: 46%;
+  top: 80%;
 }
 
 .start-button:hover {
@@ -206,7 +209,7 @@
   }
 
   .piece {
-      font-size: 8vw; /* حجم القطعة يتناسب مع عرض الشاشة */
+      font-size: 10vw; /* حجم القطعة يتناسب مع عرض الشاشة */
   }
 
   .available-move {
@@ -252,4 +255,13 @@
     top: 125%;
     left: 4%;
   }
+
+  
+.start-button {
+  position: absolute;
+  top: 70%;
+ right: 40%;
+}
+
+
 }
