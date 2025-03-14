@@ -1,4 +1,3 @@
-import React from 'react';
 
 const Promotion = ({ currentPlayer, onSelectPiece }) => {
   const pieces = currentPlayer === 'white' ? ['♕', '♖', '♗', '♘'] : ['♛', '♜', '♝', '♞'];

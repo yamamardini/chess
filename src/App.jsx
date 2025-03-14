@@ -1,23 +1,32 @@
-import React, { useState } from 'react';
+import  { useState } from 'react';
 import Home from './Home';
 import Board from './Board';
 
-function App() {
-  const [gameStarted, setGameStarted] = useState(false);
+const App = () => {
+  const [isGameStarted, setIsGameStarted] = useState(false);
+  const [isAIMode, setIsAIMode] = useState(false);
+  const [aiLevel, setAiLevel] = useState(1);
 
-  const handleStartGame = () => {
-    setGameStarted(true);
+  const onStartGame = () => {
+    setIsGameStarted(true);
+    setIsAIMode(false); // وضع اللعب ضد لاعب آخر
+  };
+
+  const onStartAIGame = (level) => {
+    setIsGameStarted(true);
+    setIsAIMode(true);
+    setAiLevel(level); // تحديد مستوى الذكاء الاصطناعي
   };
 
   return (
-    <div className="App">
-      {!gameStarted ? (
-        <Home onStartGame={handleStartGame} />
+    <div className="app">
+      {!isGameStarted ? (
+        <Home onStartGame={onStartGame} onStartAIGame={onStartAIGame} />
       ) : (
-        <Board />
+        <Board isAIMode={isAIMode} aiLevel={aiLevel} />
       )}
     </div>
   );
-}
+};
 
 export default App;

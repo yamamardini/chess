@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import './Board.css';
 import { isCheck, isCheckmate, isMoveValid } from './Checkmate';
 import Pieces from './Pieces';
+import AI from './AI'; // ملف الذكاء الاصطناعي
 
 const initialBoard = [
   [Pieces.black.rook, Pieces.black.knight, Pieces.black.bishop, Pieces.black.queen, Pieces.black.king, Pieces.black.bishop, Pieces.black.knight, Pieces.black.rook],
@@ -19,7 +20,7 @@ const Promotion = ({ currentPlayer, onSelectPiece }) => {
 
   return (
     <div className="promotion-modal">
-      <h3>Choose the upgrade piece:</h3>
+      <h3>Choose your upgrade piece:</h3>
       <div className="promotion-options">
         {pieces.map((piece, index) => (
           <div key={index} className="promotion-option" onClick={() => onSelectPiece(piece)}>
@@ -31,7 +32,7 @@ const Promotion = ({ currentPlayer, onSelectPiece }) => {
   );
 };
 
-const Board = () => {
+const Board = ({ isAIMode, aiLevel }) => {
   const [board, setBoard] = useState(initialBoard);
   const [selectedPiece, setSelectedPiece] = useState(null);
   const [availableMoves, setAvailableMoves] = useState([]);
@@ -39,10 +40,9 @@ const Board = () => {
   const [isGameOver, setIsGameOver] = useState(false);
   const [winner, setWinner] = useState(null);
   const [kingInCheck, setKingInCheck] = useState(null);
-  const [promotion, setPromotion] = useState(null); // { from: [row, col], to: [row, col] }
-  const [moveHistory, setMoveHistory] = useState([]); // تخزين تاريخ الحركات
-  const [redoHistory, setRedoHistory] = useState([]); // تخزين الحركات التي تم التراجع عنها
-
+  const [promotion, setPromotion] = useState(null);
+  const [moveHistory, setMoveHistory] = useState([]);
+  const [redoHistory, setRedoHistory] = useState([]);
 
   useEffect(() => {
     if (isCheckmate(board, currentPlayer)) {
@@ -61,10 +61,28 @@ const Board = () => {
     } else {
       setKingInCheck(null);
     }
-  }, [board, currentPlayer]);
+
+    // إذا كان الوضع ضد الذكاء الاصطناعي وكان دور الذكاء الاصطناعي
+    if (isAIMode && currentPlayer === 'black' && !isGameOver) {
+      const aiMove = AI.getMove(board, aiLevel); // تمرير مستوى الصعوبة
+      if (aiMove) {
+        const newBoard = makeMove(board, aiMove.fromRow, aiMove.fromCol, aiMove.toRow, aiMove.toCol);
+
+        // التحقق من الترقية للذكاء الاصطناعي
+        const movingPiece = board[aiMove.fromRow][aiMove.fromCol];
+        if ((movingPiece === '♙' && aiMove.toRow === 0) || (movingPiece === '♟' && aiMove.toRow === 7)) {
+          const promotionPiece = currentPlayer === 'white' ? '♕' : '♛'; // الترقية إلى وزير
+          newBoard[aiMove.toRow][aiMove.toCol] = promotionPiece;
+        }
+
+        setBoard(newBoard);
+        setCurrentPlayer('white');
+      }
+    }
+  }, [board, currentPlayer, isAIMode, aiLevel, isGameOver]);
 
   const handleSquareClick = (row, col) => {
-    if (isGameOver) return;
+    if (isGameOver || (isAIMode && currentPlayer === 'black')) return;
 
     const piece = board[row][col];
 
@@ -72,7 +90,6 @@ const Board = () => {
       const [fromRow, fromCol] = selectedPiece;
       const movingPiece = board[fromRow][fromCol];
 
-      // التحقق من أن القطعة المحددة تخص اللاعب الحالي
       if (
         (currentPlayer === 'white' && !isWhitePiece(movingPiece)) ||
         (currentPlayer === 'black' && !isBlackPiece(movingPiece))
@@ -82,27 +99,24 @@ const Board = () => {
         return;
       }
 
-      // التحقق من أن الحركة تزيل الكش
       if (isMoveValid(movingPiece, fromRow, fromCol, row, col, board)) {
         const newBoard = makeMove(board, fromRow, fromCol, row, col);
 
-        // التحقق من وصول البيدق إلى الصف الأخير
         if ((movingPiece === '♙' && row === 0) || (movingPiece === '♟' && row === 7)) {
-          setPromotion({ from: [fromRow, fromCol], to: [row, col] }); // بدء عملية الترقية
+          setPromotion({ from: [fromRow, fromCol], to: [row, col] });
           return;
         }
 
         if (!isCheck(newBoard, currentPlayer)) {
           setBoard(newBoard);
-          setMoveHistory([...moveHistory, { board: JSON.parse(JSON.stringify(board)), player: currentPlayer }]); // حفظ الحركة في التاريخ
+          setMoveHistory([...moveHistory, { board: JSON.parse(JSON.stringify(board)), player: currentPlayer }]);
           setCurrentPlayer(currentPlayer === 'white' ? 'black' : 'white');
-          setRedoHistory([]); // مسح تاريخ التقدم بعد حركة جديدة
+          setRedoHistory([]);
         }
       }
       setSelectedPiece(null);
       setAvailableMoves([]);
     } else if (piece) {
-      // التحقق من أن القطعة المحددة تخص اللاعب الحالي
       if (
         (currentPlayer === 'white' && isWhitePiece(piece)) ||
         (currentPlayer === 'black' && isBlackPiece(piece))
@@ -120,35 +134,14 @@ const Board = () => {
     const [toRow, toCol] = promotion.to;
     const newBoard = [...board];
 
-    // ترقية البيدق إلى القطعة المحددة
     newBoard[toRow][toCol] = piece;
     newBoard[fromRow][fromCol] = '';
 
     setBoard(newBoard);
-    setMoveHistory([...moveHistory, { board: JSON.parse(JSON.stringify(board)), player: currentPlayer }]); // حفظ الحركة في التاريخ
-    setPromotion(null); // إنهاء عملية الترقية
-    setCurrentPlayer(currentPlayer === 'white' ? 'black' : 'white'); // تبديل الأدوار
-    setRedoHistory([]); // مسح تاريخ التقدم بعد حركة جديدة
-  };
-
-  const undoMove = () => {
-    if (moveHistory.length === 0) return; // لا توجد حركات للتراجع
-
-    const lastMove = moveHistory[moveHistory.length - 1];
-    setBoard(lastMove.board); // استعادة اللوحة إلى الحالة السابقة
-    setCurrentPlayer(lastMove.player); // استعادة اللاعب السابق
-    setRedoHistory([...redoHistory, { board: JSON.parse(JSON.stringify(board)), player: currentPlayer }]); // حفظ الحركة في تاريخ التقدم
-    setMoveHistory(moveHistory.slice(0, -1)); // إزالة الحركة الأخيرة من التاريخ
-  };
-
-  const redoMove = () => {
-    if (redoHistory.length === 0) return; // لا توجد حركات للتقدم
-
-    const nextMove = redoHistory[redoHistory.length - 1];
-    setBoard(nextMove.board); // استعادة اللوحة إلى الحالة التالية
-    setCurrentPlayer(nextMove.player); // استعادة اللاعب التالي
-    setMoveHistory([...moveHistory, { board: JSON.parse(JSON.stringify(board)), player: currentPlayer }]); // حفظ الحركة في التاريخ
-    setRedoHistory(redoHistory.slice(0, -1)); // إزالة الحركة الأخيرة من تاريخ التقدم
+    setMoveHistory([...moveHistory, { board: JSON.parse(JSON.stringify(board)), player: currentPlayer }]);
+    setPromotion(null);
+    setCurrentPlayer(currentPlayer === 'white' ? 'black' : 'white');
+    setRedoHistory([]);
   };
 
   const calculateAvailableMoves = (row, col, piece) => {
@@ -167,7 +160,7 @@ const Board = () => {
   };
 
   const makeMove = (board, fromRow, fromCol, toRow, toCol) => {
-    const newBoard = JSON.parse(JSON.stringify(board));
+    const newBoard = JSON.parse(JSON.stringify(board)); // نسخ اللوحة
     newBoard[toRow][toCol] = newBoard[fromRow][fromCol];
     newBoard[fromRow][fromCol] = '';
     return newBoard;
@@ -175,6 +168,26 @@ const Board = () => {
 
   const isWhitePiece = (piece) => ['♔', '♕', '♖', '♗', '♘', '♙'].includes(piece);
   const isBlackPiece = (piece) => ['♚', '♛', '♜', '♝', '♞', '♟'].includes(piece);
+
+  const undoMove = () => {
+    if (moveHistory.length > 0) {
+      const lastMove = moveHistory[moveHistory.length - 1];
+      setRedoHistory([...redoHistory, { board: JSON.parse(JSON.stringify(board)), player: currentPlayer }]);
+      setBoard(lastMove.board);
+      setCurrentPlayer(lastMove.player);
+      setMoveHistory(moveHistory.slice(0, -1));
+    }
+  };
+
+  const redoMove = () => {
+    if (redoHistory.length > 0) {
+      const nextMove = redoHistory[redoHistory.length - 1];
+      setMoveHistory([...moveHistory, { board: JSON.parse(JSON.stringify(board)), player: currentPlayer }]);
+      setBoard(nextMove.board);
+      setCurrentPlayer(nextMove.player);
+      setRedoHistory(redoHistory.slice(0, -1));
+    }
+  };
 
   const renderSquare = (row, col) => {
     const isDark = (row + col) % 2 === 1;
@@ -205,13 +218,6 @@ const Board = () => {
 
   return (
     <div className="board">
-      <button className="undo-button" onClick={undoMove} disabled={moveHistory.length === 0}>
-      Undo
-      </button>
-      <button className="redo-button" onClick={redoMove} disabled={redoHistory.length === 0}>
-      redo
-      </button>
-      {Array.from({ length: 8 }, (_, row) => renderRow(row))}
       {isGameOver && (
         <div className="game-over-message">
           <h1>Game Over! The Winner is: {winner}</h1>
@@ -220,6 +226,11 @@ const Board = () => {
       {promotion && (
         <Promotion currentPlayer={currentPlayer} onSelectPiece={handlePromotion} />
       )}
+      {Array.from({ length: 8 }, (_, row) => renderRow(row))}
+      <div className="controls">
+        <button onClick={undoMove} disabled={moveHistory.length === 0} className='undo-button'>Undo</button>
+        <button onClick={redoMove} disabled={redoHistory.length === 0} className='redo-button'>Redo</button>
+      </div>
     </div>
   );
 };

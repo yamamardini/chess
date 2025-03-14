@@ -79,7 +79,7 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background-color: rgb(59, 100, 62);
+  background-color:#566987;
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
@@ -128,15 +128,16 @@
   align-items: center;
   position: absolute;
   top:15%; /* يضع العنصر عند 80% من الأعلى */
-  left: 50%; /* يضع العنصر في المنتصف أفقيًا */
-  transform: translateX(-50%); /* يعيد ضبط العنصر ليكون في المنتصف بدقة */
+  left: 37%; /* يضع العنصر في المنتصف أفقيًا */
+
+  /* transform: translateX(-50%); يعيد ضبط العنصر ليكون في المنتصف بدقة */
 }
 
 .start-button {
   padding: 15px 30px;
   font-size: 24px; /* حجم الزر ثابت */
   color: white;
-  background-color: #223a56;
+  background-color: #434343;
   border: none;
   border-radius: 10px;
   cursor: pointer;
@@ -147,8 +148,27 @@
     transform: translateX(-50%); /* يعيد ضبط العنصر ليكون في المنتصف بدقة */
 }
 
+.Ai-button{
+  padding: 15px 30px;
+  font-size: 24px; /* حجم الزر ثابت */
+  color: white;
+  background-color: #434343;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  position: absolute;
+    top: 90%; /* يضع العنصر عند 80% من الأعلى */
+    left: 50%; /* يضع العنصر في المنتصف أفقيًا */
+    transform: translateX(-50%); /* يعيد ضبط العنصر ليكون في المنتصف بدقة */
+}
+
 .start-button:hover {
-  background-color: #1f4d08;
+  background-color: #a9a9a9;
+}
+
+.Ai-button:hover {
+  background-color: #a9a9a9;
 }
 
 .undo-button {
@@ -158,20 +178,16 @@
   padding: 10px 20px;
   font-size: 16px;
   color: white;
-  background-color: #223a56;
+  background-color: #434343;
   border: none;
   border-radius: 100px;
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
 
-.undo-button:disabled {
-  background-color: #223a56;
-  cursor: not-allowed;
-}
 
 .undo-button:hover:not(:disabled) {
-  background-color: #1f4d08;
+  background-color: #a9a9a9;
 }
 
 .redo-button {
@@ -181,7 +197,7 @@
   padding: 10px 20px;
   font-size: 16px;
   color: white;
-  background-color: #223a56;
+  background-color: #434343;
   border: none;
   border-radius: 100px;
   cursor: pointer;
@@ -189,14 +205,55 @@
 }
 
 .redo-button:disabled {
-  background-color: #223a56;
+  background-color: #434343;
   cursor: not-allowed;
 }
 
 .redo-button:hover:not(:disabled) {
-  background-color: #1f4d08;
+  background-color: #a9a9a9;
 }
 
+/* قائمة مستويات الصعوبة */
+.levels-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #ffffff; /* لون الخلفية */
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  text-align: center;
+}
+
+.levels-options {
+  display: flex;
+  flex-direction: column; /* عرض العناصر بشكل عمودي */
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.level-option {
+  font-size: 25px;
+  cursor: pointer;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #6c6c6c;
+  transition: background-color 0.3s ease;
+}
+
+.level-option:hover {
+  background-color: #a9a9a9; /* لون الخلفية عند التحويم */
+}
+
+.buttons-container {
+  
+  z-index: 1; /* لجعل الأزرار تظهر فوق الشعار */
+  background-color: 434343; /* لون الخلفية للمستطيل */
+
+}
 /* Media Queries للشاشات الصغيرة */
 @media (max-width: 768px) {
   .board {
@@ -247,8 +304,6 @@
     position: absolute;
     top: 115%;
     left: 4%;
-
-
   }
 
 
