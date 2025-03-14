@@ -6,11 +6,11 @@ const AI = {
     // دالة مساعدة لتقييم الحركة بناءً على قيمة القطعة
     const evaluateMove = (move) => {
         const pieceValue = {
-            'pawn': 1,
-            'knight': 3,
-            'bishop': 3,
-            'rook': 5,
-            'queen': 9,
+            'pawn': 5,
+            'knight': 15,
+            'bishop': 10,
+            'rook': 25,
+            'queen': 30,
             'king': 100
         };
         const targetPiece = board[move.toRow][move.toCol];

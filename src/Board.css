@@ -127,7 +127,7 @@
   color: #ffffff;
   align-items: center;
   position: absolute;
-  top:15%; /* يضع العنصر عند 80% من الأعلى */
+  top:5%; /* يضع العنصر عند 80% من الأعلى */
   left: 37%; /* يضع العنصر في المنتصف أفقيًا */
 
   /* transform: translateX(-50%); يعيد ضبط العنصر ليكون في المنتصف بدقة */
