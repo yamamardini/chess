@@ -5,181 +5,448 @@ const AI = {
 
     // دالة مساعدة لتقييم الحركة بناءً على قيمة القطعة
     const evaluateMove = (move) => {
-        const pieceValue = {
-            'pawn': 5,
-            'knight': 15,
-            'bishop': 10,
-            'rook': 25,
-            'queen': 30,
-            'king': 100
-        };
-        const targetPiece = board[move.toRow][move.toCol];
-        return targetPiece ? pieceValue[targetPiece.type] || 0 : 0;
+      const pieceValue = {
+        pawn: 10,
+        knight: 40,
+        bishop: 30,
+        rook: 55,
+        queen: 80,
+        king: 100,
+      };
+      const targetPiece = board[move.toRow][move.toCol];
+      return targetPiece ? pieceValue[targetPiece.type] || 0 : 0;
     };
 
     // دالة مساعدة للبحث عن أفضل حركة بناءً على التقييم
     const findBestMove = (moves) => {
-        let bestMove = null;
-        let bestValue = -Infinity;
-        for (const move of moves) {
-            const value = evaluateMove(move);
-            if (value > bestValue) {
-                bestValue = value;
-                bestMove = move;
-            }
+      let bestMove = null;
+      let bestValue = -Infinity;
+      for (const move of moves) {
+        const value = evaluateMove(move);
+        if (value > bestValue) {
+          bestValue = value;
+          bestMove = move;
         }
-        return bestMove;
+      }
+      return bestMove;
+    };
+
+    // دالة مساعدة لتقييم الوضع الحالي للوحة
+    const evaluateBoard = (board) => {
+      let total = 0;
+      for (let row = 0; row < board.length; row++) {
+        for (let col = 0; col < board[row].length; col++) {
+          const piece = board[row][col];
+          if (piece && piece.color === 'black') {
+            total += evaluateMove({ toRow: row, toCol: col });
+          } else if (piece && piece.color === 'white') {
+            total -= evaluateMove({ toRow: row, toCol: col });
+          }
+        }
+      }
+      return total;
+    };
+
+    // دالة مساعدة للبحث عن أفضل حركة باستخدام خوارزمية Minimax
+    const minimax = (board, depth, isMaximizing) => {
+      if (depth === 0) {
+        return evaluateBoard(board);
+      }
+
+      const player = isMaximizing ? 'black' : 'white';
+      const moves = this.getAllMoves(board, player);
+
+      if (isMaximizing) {
+        let maxEval = -Infinity;
+        for (const move of moves) {
+          const tempBoard = JSON.parse(JSON.stringify(board));
+          tempBoard[move.toRow][move.toCol] = tempBoard[move.fromRow][move.fromCol];
+          tempBoard[move.fromRow][move.fromCol] = '';
+          const evaluation = minimax(tempBoard, depth - 1, false);
+          maxEval = Math.max(maxEval, evaluation);
+        }
+        return maxEval;
+      } else {
+        let minEval = Infinity;
+        for (const move of moves) {
+          const tempBoard = JSON.parse(JSON.stringify(board));
+          tempBoard[move.toRow][move.toCol] = tempBoard[move.fromRow][move.fromCol];
+          tempBoard[move.fromRow][move.fromCol] = '';
+          const evaluation = minimax(tempBoard, depth - 1, true);
+          minEval = Math.min(minEval, evaluation);
+        }
+        return minEval;
+      }
     };
 
     // المستوى 1: حركة عشوائية تمامًا
     if (level === 1) {
-        return moves[Math.floor(Math.random() * moves.length)];
+      return moves[Math.floor(Math.random() * moves.length)];
     }
 
     // المستوى 2: يفضل الحركات التي تأخذ قطعة
     else if (level === 2) {
-        const captureMove = moves.find(move => board[move.toRow][move.toCol] !== '');
-        return captureMove || moves[Math.floor(Math.random() * moves.length)];
+      const captureMove = moves.find((move) => board[move.toRow][move.toCol] !== '');
+      return captureMove || moves[Math.floor(Math.random() * moves.length)];
     }
 
     // المستوى 3: يفضل الحركات التي تأخذ قطعة ذات قيمة أعلى
     else if (level === 3) {
-        const captureMoves = moves.filter(move => board[move.toRow][move.toCol] !== '');
-        if (captureMoves.length > 0) {
-            return findBestMove(captureMoves);
-        }
-        return moves[Math.floor(Math.random() * moves.length)];
+      const captureMoves = moves.filter((move) => board[move.toRow][move.toCol] !== '');
+      if (captureMoves.length > 0) {
+        return findBestMove(captureMoves);
+      }
+      return moves[Math.floor(Math.random() * moves.length)];
     }
 
     // المستوى 4: يفضل الحركات التي تأخذ قطعة ذات قيمة أعلى، ويتجنب فقدان القطع
     else if (level === 4) {
-        const captureMoves = moves.filter(move => board[move.toRow][move.toCol] !== '');
-        if (captureMoves.length > 0) {
-            return findBestMove(captureMoves);
-        }
-        // يتجنب الحركات التي تؤدي إلى فقدان قطعة
-        const safeMoves = moves.filter(move => {
-            const tempBoard = JSON.parse(JSON.stringify(board)); // نسخ اللوحة
-            tempBoard[move.toRow][move.toCol] = tempBoard[move.fromRow][move.fromCol];
-            tempBoard[move.fromRow][move.fromCol] = '';
-            const opponentMoves = this.getAllMoves(tempBoard, 'white');
-            return !opponentMoves.some(oppMove => oppMove.toRow === move.toRow && oppMove.toCol === move.toCol);
-        });
-        return safeMoves.length > 0 ? safeMoves[Math.floor(Math.random() * safeMoves.length)] : moves[Math.floor(Math.random() * moves.length)];
+      const captureMoves = moves.filter((move) => board[move.toRow][move.toCol] !== '');
+      if (captureMoves.length > 0) {
+        return findBestMove(captureMoves);
+      }
+      // يتجنب الحركات التي تؤدي إلى فقدان قطعة
+      const safeMoves = moves.filter((move) => {
+        const tempBoard = JSON.parse(JSON.stringify(board)); // نسخ اللوحة
+        tempBoard[move.toRow][move.toCol] = tempBoard[move.fromRow][move.fromCol];
+        tempBoard[move.fromRow][move.fromCol] = '';
+        const opponentMoves = this.getAllMoves(tempBoard, 'white');
+        return !opponentMoves.some(
+          (oppMove) => oppMove.toRow === move.toRow && oppMove.toCol === move.toCol
+        );
+      });
+      return safeMoves.length > 0
+        ? safeMoves[Math.floor(Math.random() * safeMoves.length)]
+        : moves[Math.floor(Math.random() * moves.length)];
     }
 
     // المستوى 5: يفضل الحركات التي تأخذ قطعة ذات قيمة أعلى، ويتجنب فقدان القطع، ويحسن وضعية القطع
     else if (level === 5) {
-        const captureMoves = moves.filter(move => board[move.toRow][move.toCol] !== '');
-        if (captureMoves.length > 0) {
-            return findBestMove(captureMoves);
-        }
-        // يتجنب الحركات التي تؤدي إلى فقدان قطعة
-        const safeMoves = moves.filter(move => {
-            const tempBoard = JSON.parse(JSON.stringify(board)); // نسخ اللوحة
-            tempBoard[move.toRow][move.toCol] = tempBoard[move.fromRow][move.fromCol];
-            tempBoard[move.fromRow][move.fromCol] = '';
-            const opponentMoves = this.getAllMoves(tempBoard, 'white');
-            return !opponentMoves.some(oppMove => oppMove.toRow === move.toRow && oppMove.toCol === move.toCol);
-        });
-        if (safeMoves.length > 0) {
-            return safeMoves[Math.floor(Math.random() * safeMoves.length)];
-        }
-        return moves[Math.floor(Math.random() * moves.length)];
+      const captureMoves = moves.filter((move) => board[move.toRow][move.toCol] !== '');
+      if (captureMoves.length > 0) {
+        return findBestMove(captureMoves);
+      }
+      // يتجنب الحركات التي تؤدي إلى فقدان قطعة
+      const safeMoves = moves.filter((move) => {
+        const tempBoard = JSON.parse(JSON.stringify(board)); // نسخ اللوحة
+        tempBoard[move.toRow][move.toCol] = tempBoard[move.fromRow][move.fromCol];
+        tempBoard[move.fromRow][move.fromCol] = '';
+        const opponentMoves = this.getAllMoves(tempBoard, 'white');
+        return !opponentMoves.some(
+          (oppMove) => oppMove.toRow === move.toRow && oppMove.toCol === move.toCol
+        );
+      });
+      if (safeMoves.length > 0) {
+        return safeMoves[Math.floor(Math.random() * safeMoves.length)];
+      }
+      return moves[Math.floor(Math.random() * moves.length)];
     }
 
     // المستوى 6: يفضل الحركات التي تأخذ قطعة ذات قيمة أعلى، ويتجنب فقدان القطع، ويحسن وضعية القطع بشكل أكبر
     else if (level === 6) {
-        const captureMoves = moves.filter(move => board[move.toRow][move.toCol] !== '');
-        if (captureMoves.length > 0) {
-            return findBestMove(captureMoves);
-        }
-        // يتجنب الحركات التي تؤدي إلى فقدان قطعة
-        const safeMoves = moves.filter(move => {
-            const tempBoard = JSON.parse(JSON.stringify(board)); // نسخ اللوحة
-            tempBoard[move.toRow][move.toCol] = tempBoard[move.fromRow][move.fromCol];
-            tempBoard[move.fromRow][move.fromCol] = '';
-            const opponentMoves = this.getAllMoves(tempBoard, 'white');
-            return !opponentMoves.some(oppMove => oppMove.toRow === move.toRow && oppMove.toCol === move.toCol);
+      const captureMoves = moves.filter((move) => board[move.toRow][move.toCol] !== '');
+      if (captureMoves.length > 0) {
+        return findBestMove(captureMoves);
+      }
+      // يتجنب الحركات التي تؤدي إلى فقدان قطعة
+      const safeMoves = moves.filter((move) => {
+        const tempBoard = JSON.parse(JSON.stringify(board)); // نسخ اللوحة
+        tempBoard[move.toRow][move.toCol] = tempBoard[move.fromRow][move.fromCol];
+        tempBoard[move.fromRow][move.fromCol] = '';
+        const opponentMoves = this.getAllMoves(tempBoard, 'white');
+        return !opponentMoves.some(
+          (oppMove) => oppMove.toRow === move.toRow && oppMove.toCol === move.toCol
+        );
+      });
+      if (safeMoves.length > 0) {
+        // يفضل الحركات التي تحسن وضعية القطع (مثل تحريك القطع إلى مربعات أكثر أمانًا)
+        const improvedMoves = safeMoves.filter((move) => {
+          const tempBoard = JSON.parse(JSON.stringify(board));
+          tempBoard[move.toRow][move.toCol] = tempBoard[move.fromRow][move.fromCol];
+          tempBoard[move.fromRow][move.fromCol] = '';
+          const opponentMoves = this.getAllMoves(tempBoard, 'white');
+          return opponentMoves.length < moves.length; // إذا قل عدد حركات الخصم، فهذه حركة جيدة
         });
-        if (safeMoves.length > 0) {
-            // يفضل الحركات التي تحسن وضعية القطع (مثل تحريك القطع إلى مربعات أكثر أمانًا)
-            const improvedMoves = safeMoves.filter(move => {
-                const tempBoard = JSON.parse(JSON.stringify(board));
-                tempBoard[move.toRow][move.toCol] = tempBoard[move.fromRow][move.fromCol];
-                tempBoard[move.fromRow][move.fromCol] = '';
-                const opponentMoves = this.getAllMoves(tempBoard, 'white');
-                return opponentMoves.length < moves.length; // إذا قل عدد حركات الخصم، فهذه حركة جيدة
-            });
-            return improvedMoves.length > 0 ? improvedMoves[Math.floor(Math.random() * improvedMoves.length)] : safeMoves[Math.floor(Math.random() * safeMoves.length)];
-        }
-        return moves[Math.floor(Math.random() * moves.length)];
+        return improvedMoves.length > 0
+          ? improvedMoves[Math.floor(Math.random() * improvedMoves.length)]
+          : safeMoves[Math.floor(Math.random() * safeMoves.length)];
+      }
+      return moves[Math.floor(Math.random() * moves.length)];
     }
 
     // المستوى 7: يفضل الحركات التي تأخذ قطعة ذات قيمة أعلى، ويتجنب فقدان القطع، ويحسن وضعية القطع بشكل أكبر، ويفكر خطوة إلى الأمام
     else if (level === 7) {
-        const captureMoves = moves.filter(move => board[move.toRow][move.toCol] !== '');
-        if (captureMoves.length > 0) {
-            return findBestMove(captureMoves);
-        }
-        // يتجنب الحركات التي تؤدي إلى فقدان قطعة
-        const safeMoves = moves.filter(move => {
-            const tempBoard = JSON.parse(JSON.stringify(board)); // نسخ اللوحة
-            tempBoard[move.toRow][move.toCol] = tempBoard[move.fromRow][move.fromCol];
-            tempBoard[move.fromRow][move.fromCol] = '';
-            const opponentMoves = this.getAllMoves(tempBoard, 'white');
-            return !opponentMoves.some(oppMove => oppMove.toRow === move.toRow && oppMove.toCol === move.toCol);
+      const captureMoves = moves.filter((move) => board[move.toRow][move.toCol] !== '');
+      if (captureMoves.length > 0) {
+        return findBestMove(captureMoves);
+      }
+      // يتجنب الحركات التي تؤدي إلى فقدان قطعة
+      const safeMoves = moves.filter((move) => {
+        const tempBoard = JSON.parse(JSON.stringify(board)); // نسخ اللوحة
+        tempBoard[move.toRow][move.toCol] = tempBoard[move.fromRow][move.fromCol];
+        tempBoard[move.fromRow][move.fromCol] = '';
+        const opponentMoves = this.getAllMoves(tempBoard, 'white');
+        return !opponentMoves.some(
+          (oppMove) => oppMove.toRow === move.toRow && oppMove.toCol === move.toCol
+        );
+      });
+      if (safeMoves.length > 0) {
+        // يفضل الحركات التي تحسن وضعية القطع (مثل تحريك القطع إلى مربعات أكثر أمانًا)
+        const improvedMoves = safeMoves.filter((move) => {
+          const tempBoard = JSON.parse(JSON.stringify(board));
+          tempBoard[move.toRow][move.toCol] = tempBoard[move.fromRow][move.fromCol];
+          tempBoard[move.fromRow][move.fromCol] = '';
+          const opponentMoves = this.getAllMoves(tempBoard, 'white');
+          return opponentMoves.length < moves.length; // إذا قل عدد حركات الخصم، فهذه حركة جيدة
         });
-        if (safeMoves.length > 0) {
-            // يفضل الحركات التي تحسن وضعية القطع (مثل تحريك القطع إلى مربعات أكثر أمانًا)
-            const improvedMoves = safeMoves.filter(move => {
-                const tempBoard = JSON.parse(JSON.stringify(board));
-                tempBoard[move.toRow][move.toCol] = tempBoard[move.fromRow][move.fromCol];
-                tempBoard[move.fromRow][move.fromCol] = '';
-                const opponentMoves = this.getAllMoves(tempBoard, 'white');
-                return opponentMoves.length < moves.length; // إذا قل عدد حركات الخصم، فهذه حركة جيدة
-            });
-            return improvedMoves.length > 0 ? improvedMoves[Math.floor(Math.random() * improvedMoves.length)] : safeMoves[Math.floor(Math.random() * safeMoves.length)];
-        }
-        return moves[Math.floor(Math.random() * moves.length)];
+        return improvedMoves.length > 0
+          ? improvedMoves[Math.floor(Math.random() * improvedMoves.length)]
+          : safeMoves[Math.floor(Math.random() * safeMoves.length)];
+      }
+      return moves[Math.floor(Math.random() * moves.length)];
     }
 
     // المستوى 8: يفضل الحركات التي تأخذ قطعة ذات قيمة أعلى، ويتجنب فقدان القطع، ويحسن وضعية القطع بشكل أكبر، ويفكر خطوتين إلى الأمام
     else if (level === 8) {
-        const captureMoves = moves.filter(move => board[move.toRow][move.toCol] !== '');
-        if (captureMoves.length > 0) {
+      const captureMoves = moves.filter((move) => board[move.toRow][move.toCol] !== '');
+      if (captureMoves.length > 0) {
+        return findBestMove(captureMoves);
+      }
+      // يتجنب الحركات التي تؤدي إلى فقدان قطعة
+      const safeMoves = moves.filter((move) => {
+        const tempBoard = JSON.parse(JSON.stringify(board)); // نسخ اللوحة
+        tempBoard[move.toRow][move.toCol] = tempBoard[move.fromRow][move.fromCol];
+        tempBoard[move.fromRow][move.fromCol] = '';
+        const opponentMoves = this.getAllMoves(tempBoard, 'white');
+        return !opponentMoves.some(
+          (oppMove) => oppMove.toRow === move.toRow && oppMove.toCol === move.toCol
+        );
+      });
+      if (safeMoves.length > 0) {
+        // يفضل الحركات التي تحسن وضعية القطع (مثل تحريك القطع إلى مربعات أكثر أمانًا)
+        const improvedMoves = safeMoves.filter((move) => {
+          const tempBoard = JSON.parse(JSON.stringify(board));
+          tempBoard[move.toRow][move.toCol] = tempBoard[move.fromRow][move.fromCol];
+          tempBoard[move.fromRow][move.fromCol] = '';
+          const opponentMoves = this.getAllMoves(tempBoard, 'white');
+          return opponentMoves.length < moves.length; // إذا قل عدد حركات الخصم، فهذه حركة جيدة
+        });
+        return improvedMoves.length > 0
+          ? improvedMoves[Math.floor(Math.random() * improvedMoves.length)]
+          : safeMoves[Math.floor(Math.random() * safeMoves.length)];
+      }
+      return moves[Math.floor(Math.random() * moves.length)];
+    }
+
+    // المستوى 9: يفضل الحركات التي تأخذ قطعة ذات قيمة أعلى، ويتجنب فقدان القطع، ويحسن وضعية القطع بشكل أكبر، ويفكر ثلاث خطوات إلى الأمام
+    else if (level === 9) {
+      const captureMoves = moves.filter((move) => board[move.toRow][move.toCol] !== '');
+      if (captureMoves.length > 0) {
+        return findBestMove(captureMoves);
+      }
+      // يتجنب الحركات التي تؤدي إلى فقدان قطعة
+      const safeMoves = moves.filter((move) => {
+        const tempBoard = JSON.parse(JSON.stringify(board)); // نسخ اللوحة
+        tempBoard[move.toRow][move.toCol] = tempBoard[move.fromRow][move.fromCol];
+        tempBoard[move.fromRow][move.fromCol] = '';
+        const opponentMoves = this.getAllMoves(tempBoard, 'white');
+        return !opponentMoves.some(
+          (oppMove) => oppMove.toRow === move.toRow && oppMove.toCol === move.toCol
+        );
+      });
+      if (safeMoves.length > 0) {
+        // يفضل الحركات التي تحسن وضعية القطع (مثل تحريك القطع إلى مربعات أكثر أمانًا)
+        const improvedMoves = safeMoves.filter((move) => {
+          const tempBoard = JSON.parse(JSON.stringify(board));
+          tempBoard[move.toRow][move.toCol] = tempBoard[move.fromRow][move.fromCol];
+          tempBoard[move.fromRow][move.fromCol] = '';
+          const opponentMoves = this.getAllMoves(tempBoard, 'white');
+          return opponentMoves.length < moves.length; // إذا قل عدد حركات الخصم، فهذه حركة جيدة
+        });
+        return improvedMoves.length > 0
+          ? improvedMoves[Math.floor(Math.random() * improvedMoves.length)]
+          : safeMoves[Math.floor(Math.random() * safeMoves.length)];
+      }
+      return moves[Math.floor(Math.random() * moves.length)];
+    }
+
+        // المستوى 10: يفضل الحركات التي تأخذ قطعة ذات قيمة أعلى، ويتجنب فقدان القطع، ويحسن وضعية القطع بشكل أكبر، ويفكر أربع خطوات إلى الأمام
+        else if (level === 10) {
+          const captureMoves = moves.filter((move) => board[move.toRow][move.toCol] !== '');
+          if (captureMoves.length > 0) {
             return findBestMove(captureMoves);
-        }
-        // يتجنب الحركات التي تؤدي إلى فقدان قطعة
-        const safeMoves = moves.filter(move => {
+          }
+          // يتجنب الحركات التي تؤدي إلى فقدان قطعة
+          const safeMoves = moves.filter((move) => {
             const tempBoard = JSON.parse(JSON.stringify(board)); // نسخ اللوحة
             tempBoard[move.toRow][move.toCol] = tempBoard[move.fromRow][move.fromCol];
             tempBoard[move.fromRow][move.fromCol] = '';
             const opponentMoves = this.getAllMoves(tempBoard, 'white');
-            return !opponentMoves.some(oppMove => oppMove.toRow === move.toRow && oppMove.toCol === move.toCol);
-        });
-        if (safeMoves.length > 0) {
+            return !opponentMoves.some(
+              (oppMove) => oppMove.toRow === move.toRow && oppMove.toCol === move.toCol
+            );
+          });
+          if (safeMoves.length > 0) {
             // يفضل الحركات التي تحسن وضعية القطع (مثل تحريك القطع إلى مربعات أكثر أمانًا)
-            const improvedMoves = safeMoves.filter(move => {
-                const tempBoard = JSON.parse(JSON.stringify(board));
-                tempBoard[move.toRow][move.toCol] = tempBoard[move.fromRow][move.fromCol];
-                tempBoard[move.fromRow][move.fromCol] = '';
-                const opponentMoves = this.getAllMoves(tempBoard, 'white');
-                return opponentMoves.length < moves.length; // إذا قل عدد حركات الخصم، فهذه حركة جيدة
+            const improvedMoves = safeMoves.filter((move) => {
+              const tempBoard = JSON.parse(JSON.stringify(board));
+              tempBoard[move.toRow][move.toCol] = tempBoard[move.fromRow][move.fromCol];
+              tempBoard[move.fromRow][move.fromCol] = '';
+              const opponentMoves = this.getAllMoves(tempBoard, 'white');
+              return opponentMoves.length < moves.length; // إذا قل عدد حركات الخصم، فهذه حركة جيدة
             });
-            return improvedMoves.length > 0 ? improvedMoves[Math.floor(Math.random() * improvedMoves.length)] : safeMoves[Math.floor(Math.random() * safeMoves.length)];
+            if (improvedMoves.length > 0) {
+              // يفكر في أربع خطوات إلى الأمام
+              const bestMove = improvedMoves.reduce((best, move) => {
+                let moveValue = 0;
+                for (let i = 0; i < 4; i++) { // أربع خطوات إلى الأمام
+                  const tempBoard = JSON.parse(JSON.stringify(board));
+                  tempBoard[move.toRow][move.toCol] = tempBoard[move.fromRow][move.fromCol];
+                  tempBoard[move.fromRow][move.fromCol] = '';
+                  const opponentResponse = this.getAllMoves(tempBoard, 'white');
+                  if (opponentResponse.length === 0) {
+                    moveValue += 100; // إذا كان الخصم لا يملك حركات، فهذه حركة ممتازة
+                  } else {
+                    moveValue -= opponentResponse.length; // كلما قل عدد حركات الخصم، كانت الحركة أفضل
+                  }
+                }
+                if (moveValue > best.value) {
+                  return { move, value: moveValue };
+                }
+                return best;
+              }, { move: null, value: -Infinity });
+    
+              return bestMove.move || improvedMoves[Math.floor(Math.random() * improvedMoves.length)];
+            }
+            return safeMoves[Math.floor(Math.random() * safeMoves.length)];
+          }
+          return moves[Math.floor(Math.random() * moves.length)];
         }
-        return moves[Math.floor(Math.random() * moves.length)];
-    }
-
-    // المستوى الافتراضي: حركة عشوائية
-    else {
-        return moves[Math.floor(Math.random() * moves.length)];
-    }
-},
-
+    
+        // المستوى 11: يفضل الحركات التي تأخذ قطعة ذات قيمة أعلى، ويتجنب فقدان القطع، ويحسن وضعية القطع بشكل أكبر، ويفكر خمس خطوات إلى الأمام
+        else if (level === 11) {
+          const captureMoves = moves.filter((move) => board[move.toRow][move.toCol] !== '');
+          if (captureMoves.length > 0) {
+            return findBestMove(captureMoves);
+          }
+          // يتجنب الحركات التي تؤدي إلى فقدان قطعة
+          const safeMoves = moves.filter((move) => {
+            const tempBoard = JSON.parse(JSON.stringify(board)); // نسخ اللوحة
+            tempBoard[move.toRow][move.toCol] = tempBoard[move.fromRow][move.fromCol];
+            tempBoard[move.fromRow][move.fromCol] = '';
+            const opponentMoves = this.getAllMoves(tempBoard, 'white');
+            return !opponentMoves.some(
+              (oppMove) => oppMove.toRow === move.toRow && oppMove.toCol === move.toCol
+            );
+          });
+          if (safeMoves.length > 0) {
+            // يفضل الحركات التي تحسن وضعية القطع (مثل تحريك القطع إلى مربعات أكثر أمانًا)
+            const improvedMoves = safeMoves.filter((move) => {
+              const tempBoard = JSON.parse(JSON.stringify(board));
+              tempBoard[move.toRow][move.toCol] = tempBoard[move.fromRow][move.fromCol];
+              tempBoard[move.fromRow][move.fromCol] = '';
+              const opponentMoves = this.getAllMoves(tempBoard, 'white');
+              return opponentMoves.length < moves.length; // إذا قل عدد حركات الخصم، فهذه حركة جيدة
+            });
+            if (improvedMoves.length > 0) {
+              // يفكر في خمس خطوات إلى الأمام
+              const bestMove = improvedMoves.reduce((best, move) => {
+                let moveValue = 0;
+                for (let i = 0; i < 5; i++) { // خمس خطوات إلى الأمام
+                  const tempBoard = JSON.parse(JSON.stringify(board));
+                  tempBoard[move.toRow][move.toCol] = tempBoard[move.fromRow][move.fromCol];
+                  tempBoard[move.fromRow][move.fromCol] = '';
+                  const opponentResponse = this.getAllMoves(tempBoard, 'white');
+                  if (opponentResponse.length === 0) {
+                    moveValue += 100; // إذا كان الخصم لا يملك حركات، فهذه حركة ممتازة
+                  } else {
+                    moveValue -= opponentResponse.length; // كلما قل عدد حركات الخصم، كانت الحركة أفضل
+                  }
+                }
+                if (moveValue > best.value) {
+                  return { move, value: moveValue };
+                }
+                return best;
+              }, { move: null, value: -Infinity });
+    
+              return bestMove.move || improvedMoves[Math.floor(Math.random() * improvedMoves.length)];
+            }
+            return safeMoves[Math.floor(Math.random() * safeMoves.length)];
+          }
+          return moves[Math.floor(Math.random() * moves.length)];
+        }
+    
+        // المستوى 12: يفضل الحركات التي تأخذ قطعة ذات قيمة أعلى، ويتجنب فقدان القطع، ويحسن وضعية القطع بشكل أكبر، ويفكر ست خطوات إلى الأمام
+        else if (level === 12) {
+          const captureMoves = moves.filter((move) => board[move.toRow][move.toCol] !== '');
+          if (captureMoves.length > 0) {
+            return findBestMove(captureMoves);
+          }
+          // يتجنب الحركات التي تؤدي إلى فقدان قطعة
+          const safeMoves = moves.filter((move) => {
+            const tempBoard = JSON.parse(JSON.stringify(board)); // نسخ اللوحة
+            tempBoard[move.toRow][move.toCol] = tempBoard[move.fromRow][move.fromCol];
+            tempBoard[move.fromRow][move.fromCol] = '';
+            const opponentMoves = this.getAllMoves(tempBoard, 'white');
+            return !opponentMoves.some(
+              (oppMove) => oppMove.toRow === move.toRow && oppMove.toCol === move.toCol
+            );
+          });
+          if (safeMoves.length > 0) {
+            // يفضل الحركات التي تحسن وضعية القطع (مثل تحريك القطع إلى مربعات أكثر أمانًا)
+            const improvedMoves = safeMoves.filter((move) => {
+              const tempBoard = JSON.parse(JSON.stringify(board));
+              tempBoard[move.toRow][move.toCol] = tempBoard[move.fromRow][move.fromCol];
+              tempBoard[move.fromRow][move.fromCol] = '';
+              const opponentMoves = this.getAllMoves(tempBoard, 'white');
+              return opponentMoves.length < moves.length; // إذا قل عدد حركات الخصم، فهذه حركة جيدة
+            });
+            if (improvedMoves.length > 0) {
+              // يفكر في ست خطوات إلى الأمام
+              const bestMove = improvedMoves.reduce((best, move) => {
+                let moveValue = 0;
+                for (let i = 0; i < 6; i++) { // ست خطوات إلى الأمام
+                  const tempBoard = JSON.parse(JSON.stringify(board));
+                  tempBoard[move.toRow][move.toCol] = tempBoard[move.fromRow][move.fromCol];
+                  tempBoard[move.fromRow][move.fromCol] = '';
+                  const opponentResponse = this.getAllMoves(tempBoard, 'white');
+                  if (opponentResponse.length === 0) {
+                    moveValue += 100; // إذا كان الخصم لا يملك حركات، فهذه حركة ممتازة
+                  } else {
+                    moveValue -= opponentResponse.length; // كلما قل عدد حركات الخصم، كانت الحركة أفضل
+                  }
+                }
+                if (moveValue > best.value) {
+                  return { move, value: moveValue };
+                }
+                return best;
+              }, { move: null, value: -Infinity });
+    
+              return bestMove.move || improvedMoves[Math.floor(Math.random() * improvedMoves.length)];
+            }
+            return safeMoves[Math.floor(Math.random() * safeMoves.length)];
+          }
+          return moves[Math.floor(Math.random() * moves.length)];
+        }
+    
+        // المستوى الافتراضي: حركة عشوائية
+        else {
+          console.log('error');
+        }
+      },
+  
   // تقييم اللوحة
   evaluateBoard(board) {
+    if (this.isCheckmate(board, 'white')) {
+      return -Infinity;
+    }
+    if (this.isCheckmate(board, 'black')) {
+      return Infinity;
+    }
+    if (this.isStalemate(board, 'white') || this.isStalemate(board, 'black')) {
+      return 0;
+    }
+
     let score = 0;
     for (let row = 0; row < 8; row++) {
       for (let col = 0; col < 8; col++) {
@@ -218,7 +485,6 @@ const AI = {
         return 0;
     }
   },
-
   // الحصول على قيمة الموقع للقطعة
   getPiecePositionScore(piece, row, col) {
     const pieceType = piece.toLowerCase();
@@ -463,6 +729,9 @@ const AI = {
 
   // الحصول على أفضل حركة باستخدام Minimax
   getBestMove(board, moves, depth) {
+    if (this.isGameOver(board)) {
+      return null;
+    }
     let bestMove = null;
     let bestValue = -Infinity;
 
@@ -506,10 +775,10 @@ const AI = {
     }
   },
 
+  
   // التحقق من انتهاء اللعبة
   isGameOver(board) {
-    // التحقق من وجود كش ملك أو عدم وجود حركات ممكنة
-    return this.isCheckmate(board, 'white') || this.isCheckmate(board, 'black');
+    return this.isCheckmate(board, 'white') || this.isCheckmate(board, 'black') || this.isStalemate(board, 'white') || this.isStalemate(board, 'black');
   },
 
   // التحقق من كش ملك

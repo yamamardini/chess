@@ -1,3 +1,4 @@
+// Checkmate.js
 export const isCheck = (board, currentPlayer) => {
   const king = currentPlayer === 'white' ? '♔' : '♚';
   let kingRow, kingCol;
@@ -41,6 +42,32 @@ export const isCheckmate = (board, currentPlayer) => {
   }
 
   return true; // لا توجد حركات متاحة، كش مات
+};
+
+export const isStalemate = (board, currentPlayer) => {
+  // إذا كان الملك مكشوشًا، فهذه ليست حالة جمود
+  if (isCheck(board, currentPlayer)) return false;
+
+  // التحقق من وجود أي حركة متاحة للاعب الحالي
+  for (let row = 0; row < 8; row++) {
+    for (let col = 0; col < 8; col++) {
+      const piece = board[row][col];
+      if (piece && isSameColor(piece, currentPlayer === 'white' ? '♔' : '♚')) {
+        for (let i = 0; i < 8; i++) {
+          for (let j = 0; j < 8; j++) {
+            if (isMoveValid(piece, row, col, i, j, board)) {
+              const newBoard = makeMove(board, row, col, i, j);
+              if (!isCheck(newBoard, currentPlayer)) {
+                return false; // هناك حركة متاحة، ليست حالة جمود
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  return true; // لا توجد حركات متاحة، حالة جمود (خسارة)
 };
 
 const isSquareAttacked = (row, col, board, currentPlayer) => {

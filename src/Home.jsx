@@ -27,7 +27,7 @@ const Home = ({ onStartGame, onStartAIGame }) => {
         </button>
         {showLevels && (
           <div className="levels-menu">
-            {[1, 2, 3 ,4, 5, 6, 7, 8].map((level) => (
+            {[1, 2, 3 ,4, 5, 6, 7, 8 ,9 ,10 ,11,12].map((level) => (
               <div
                 key={level}
                 className="level-option"

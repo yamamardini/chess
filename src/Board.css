@@ -127,9 +127,8 @@
   color: #ffffff;
   align-items: center;
   position: absolute;
-  top:5%; /* يضع العنصر عند 80% من الأعلى */
+  top:10%; /* يضع العنصر عند 80% من الأعلى */
   left: 37%; /* يضع العنصر في المنتصف أفقيًا */
-
   /* transform: translateX(-50%); يعيد ضبط العنصر ليكون في المنتصف بدقة */
 }
 
@@ -146,6 +145,7 @@
     top: 80%; /* يضع العنصر عند 80% من الأعلى */
     left: 50%; /* يضع العنصر في المنتصف أفقيًا */
     transform: translateX(-50%); /* يعيد ضبط العنصر ليكون في المنتصف بدقة */
+    z-index: -1;
 }
 
 .Ai-button{
@@ -161,6 +161,7 @@
     top: 90%; /* يضع العنصر عند 80% من الأعلى */
     left: 50%; /* يضع العنصر في المنتصف أفقيًا */
     transform: translateX(-50%); /* يعيد ضبط العنصر ليكون في المنتصف بدقة */
+    z-index: -1;
 }
 
 .start-button:hover {
@@ -216,15 +217,17 @@
 /* قائمة مستويات الصعوبة */
 .levels-modal {
   position: fixed;
-  top: 50%;
+  top: 20px; /* تم تعديله ليظهر في أعلى الصفحة */
   left: 50%;
-  transform: translate(-50%, -50%);
+  transform: translateX(-50%); /* تم تعديله ليكون في المنتصف أفقيًا */
   background-color: #ffffff; /* لون الخلفية */
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-  z-index: 1000;
+  z-index: 1; /* زيادة z-index لتكون فوق كل العناصر */
   text-align: center;
+  width: 90%; /* عرض مناسب */
+  max-width: 400px; /* أقصى عرض */
 }
 
 .levels-options {
@@ -238,9 +241,9 @@
   font-size: 25px;
   cursor: pointer;
   padding: 10px;
-  border: 1px solid #ccc;
+  border: 2px solid #0f3279;
   border-radius: 5px;
-  background-color: #6c6c6c;
+  background-color: #ccc;
   transition: background-color 0.3s ease;
 }
 
@@ -318,9 +321,13 @@
 
   .knight {
       position: absolute;
-      top: 20%; /* يضع العنصر عند 80% من الأعلى */
+      top: 2%; /* يضع العنصر عند 80% من الأعلى */
       left: 50%; /* يضع العنصر في المنتصف أفقيًا */
       transform: translateX(-50%); /* يعيد ضبط العنصر ليكون في المنتصف بدقة */
   }
   
+  .start-button{
+  position: absolute;
+    top: 78%;
+  }
 }

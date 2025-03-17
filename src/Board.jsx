@@ -1,6 +1,7 @@
+// Board.js
 import { useState, useEffect } from 'react';
 import './Board.css';
-import { isCheck, isCheckmate, isMoveValid } from './Checkmate';
+import { isCheck, isCheckmate, isStalemate, isMoveValid } from './Checkmate';
 import Pieces from './Pieces';
 import AI from './AI'; // ملف الذكاء الاصطناعي
 
@@ -48,6 +49,9 @@ const Board = ({ isAIMode, aiLevel }) => {
     if (isCheckmate(board, currentPlayer)) {
       setIsGameOver(true);
       setWinner(currentPlayer === 'white' ? 'black' : 'white');
+    } else if (isStalemate(board, currentPlayer)) {
+      setIsGameOver(true);
+      setWinner(currentPlayer === 'white' ? 'black' : 'white'); // الخصم يفوز
     } else if (isCheck(board, currentPlayer)) {
       const king = currentPlayer === 'white' ? '♔' : '♚';
       for (let row = 0; row < 8; row++) {
@@ -61,20 +65,20 @@ const Board = ({ isAIMode, aiLevel }) => {
     } else {
       setKingInCheck(null);
     }
-
+  
     // إذا كان الوضع ضد الذكاء الاصطناعي وكان دور الذكاء الاصطناعي
     if (isAIMode && currentPlayer === 'black' && !isGameOver) {
       const aiMove = AI.getMove(board, aiLevel); // تمرير مستوى الصعوبة
       if (aiMove) {
         const newBoard = makeMove(board, aiMove.fromRow, aiMove.fromCol, aiMove.toRow, aiMove.toCol);
-
+  
         // التحقق من الترقية للذكاء الاصطناعي
         const movingPiece = board[aiMove.fromRow][aiMove.fromCol];
         if ((movingPiece === '♙' && aiMove.toRow === 0) || (movingPiece === '♟' && aiMove.toRow === 7)) {
           const promotionPiece = currentPlayer === 'white' ? '♕' : '♛'; // الترقية إلى وزير
           newBoard[aiMove.toRow][aiMove.toCol] = promotionPiece;
         }
-
+  
         setBoard(newBoard);
         setCurrentPlayer('white');
       }
@@ -218,11 +222,23 @@ const Board = ({ isAIMode, aiLevel }) => {
 
   return (
     <div className="board">
-      {isGameOver && (
-        <div className="game-over-message">
-          <h1>Game Over! The Winner is: {winner}</h1>
-        </div>
-      )}
+   {isGameOver && (
+  <div className="game-over-message">
+    <h1>
+      {isAIMode
+        ? winner === 'white'
+          ? 'Game Over! You Win!'
+          : winner === 'black'
+          ? 'Game Over! The Winner is: AI'
+          : 'Draw!'
+        : winner === 'white'
+        ? 'Game Over! White Wins.'
+        : winner === 'black'
+        ? 'Game Over! Black Wins.'
+        : 'Draw!'}
+    </h1>
+  </div>
+)}
       {promotion && (
         <Promotion currentPlayer={currentPlayer} onSelectPiece={handlePromotion} />
       )}
