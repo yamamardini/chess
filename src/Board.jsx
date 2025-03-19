@@ -227,14 +227,14 @@ const Board = ({ isAIMode, aiLevel }) => {
     <h1>
       {isAIMode
         ? winner === 'white'
-          ? 'Game Over! You Win!'
+          ? 'Game Over! The Winner is: You'
           : winner === 'black'
           ? 'Game Over! The Winner is: AI'
           : 'Draw!'
         : winner === 'white'
-        ? 'Game Over! White Wins.'
+        ? 'Game Over! The Winner is: white'
         : winner === 'black'
-        ? 'Game Over! Black Wins.'
+        ? 'Game Over! The Winner is: black'
         : 'Draw!'}
     </h1>
   </div>
