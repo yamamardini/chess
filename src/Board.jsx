@@ -221,24 +221,33 @@ const Board = ({ isAIMode, aiLevel }) => {
   };
 
   return (
-    <div className="board">
-   {isGameOver && (
-  <div className="game-over-message">
-    <h1>
-      {isAIMode
-        ? winner === 'white'
-          ? 'Game Over! The Winner is: You'
-          : winner === 'black'
-          ? 'Game Over! The Winner is: AI'
-          : 'Draw!'
-        : winner === 'white'
-        ? 'Game Over! The Winner is: white'
-        : winner === 'black'
-        ? 'Game Over! The Winner is: black'
-        : 'Draw!'}
-    </h1>
-  </div>
-)}
+    <div className="board-container">
+      {/* إضافة قسم رأس اللعبة هنا */}
+      <div className="game-header">
+        <h1 className="chess-mastery">Chess Mastery</h1>
+        <p className="subtitle">
+          Experience chess like never before with stunning visuals and adaptive AI
+        </p>
+      </div>
+
+      {/* بقية الكود كما هو */}
+      {isGameOver && (
+        <div className="game-over-message">
+          <h1>
+            {isAIMode
+              ? winner === 'white'
+                ? 'Game Over! The Winner is: You'
+                : winner === 'black'
+                ? 'Game Over! The Winner is: AI'
+                : 'Draw!'
+              : winner === 'white'
+              ? 'Game Over! The Winner is: white'
+              : winner === 'black'
+              ? 'Game Over! The Winner is: black'
+              : 'Draw!'}
+          </h1>
+        </div>
+      )}
       {promotion && (
         <Promotion currentPlayer={currentPlayer} onSelectPiece={handlePromotion} />
       )}

@@ -1,0 +1,459 @@
+:root {
+  /* الألوان الأساسية */
+  --primary-color: #2b2d42; /* أزرق داكن أنيق */
+  --secondary-color: #4a4e69; /* أزرمادي متوسط */
+  --accent-color: #8d99ae; /* أزرق فاتح ناعم */
+  
+  /* ألوان التمييز */
+  --feature-color: #ef233c; /* لون تمييزي (للأزرار المهمة) */
+  --light-accent: #edf2f4; /* خلفيات فاتحة */
+  
+  /* النصوص */
+  --text-dark: #2b2d42;
+  --text-medium: #4a4e69;
+  --text-light: #8d99ae;
+  
+  /* درجات المستويات */
+  --level-1: #8d99ae;
+  --level-2: #7a8ba9;
+  --level-3: #677fa4;
+  --level-4: #55739f;
+  --level-5: #426799;
+  --level-6: #2f5b94;
+  --level-7: #1d4f8f;
+  --level-8: #0a438a;
+  --level-9: #003280;
+  --level-10: #002b73;
+  --level-11: #002466;
+  --level-12: #001d59;
+  
+  /* الظلال */
+  --shadow-light: rgba(43, 45, 66, 0.1);
+  --shadow-medium: rgba(43, 45, 66, 0.2);
+}
+
+.home {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  padding: 40px 20px;
+  background-color: #f4f2f0;
+  font-family: 'Montserrat', sans-serif;
+  background-image: 
+    linear-gradient(rgba(0, 0, 0, 0.1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 0, 0, 0.1) 1px, transparent 1px);
+  background-size: 60px 60px;
+  animation: 
+    moveHorizontal 8s linear infinite,
+    moveVertical 6s linear infinite;
+}
+
+@keyframes moveHorizontal {
+  0% { background-position-x: 0; }
+  100% { background-position-x: 60px; }
+}
+
+@keyframes moveVertical {
+  0% { background-position-y: 0; }
+  100% { background-position-y: -60px; }
+}
+
+.game-header {
+  text-align: center;
+  margin-bottom: 60px;
+  animation: fadeIn 0.8s ease-out;
+}
+
+.chess-mastery {
+  font-size: 3.5rem;
+  font-weight: 800;
+  color: var(--primary-color);
+  margin-bottom: 15px;
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  letter-spacing: -1px;
+}
+
+.subtitle {
+  font-size: 1.2rem;
+  color: var(--text-light);
+  max-width: 700px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+/* تصميم المربعات المطور */
+.game-options {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(300px, 1fr));
+  gap: 30px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  justify-items: center;
+}
+
+.game-card {
+  position: relative;
+  background: white;
+  border-left: 4px solid var(--accent-color);
+  border-radius: 16px;
+  padding: 30px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+  overflow: hidden;
+  border: 1px solid rgba(0,0,0,0.03);
+  animation: fadeInUp 0.6s ease-out forwards;
+  opacity: 0;
+}
+
+.game-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 5px;
+  background: linear-gradient(90deg, var(--secondary-color), var(--accent-color));
+}
+
+.game-card:nth-child(1) { 
+  animation-delay: 0.2s;
+  transform-origin: bottom left;
+}
+.game-card:nth-child(2) { 
+  animation-delay: 0.4s;
+  transform-origin: bottom center;
+}
+.game-card:nth-child(3) { 
+  animation-delay: 0.6s;
+  transform-origin: bottom right;
+  
+}
+
+.game-card:hover {
+  transform: translateY(-10px) scale(1.02);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.12);
+}
+
+.game-card h3 {
+  font-size: 1.6rem;
+  margin-bottom: 20px;
+  color: var(--primary-color);
+  position: relative;
+  display: inline-block;
+}
+
+.game-card h3::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 0;
+  width: 50px;
+  height: 3px;
+  background: var(--secondary-color);
+  border-radius: 3px;
+}
+
+.game-card p {
+  font-size: 1rem;
+  color: var(--text-medium);
+  line-height: 1.7;
+  margin-bottom: 30px;
+}
+
+.play-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 30px;
+  background: linear-gradient(135deg, var(--text-medium), var(--primary-color));
+  color: white;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(86, 105, 135, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+.play-button::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  transition: 0.5s;
+}
+
+.play-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 7px 20px rgba(86, 105, 135, 0.4);
+}
+
+.play-button:hover::after {
+  left: 100%;
+}
+
+
+.coming-soon-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 30px;
+  background: linear-gradient(135deg, #8d99ae, #8d99ae); /* لون فاتح */
+  color: #ffffff; /* لون نص داكن */
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  border: none;
+  cursor: not-allowed; /* مؤشر غير متاح */
+  box-shadow: 0 4px 15px rgba(168, 168, 168, 0.3); /* ظل فاتح */
+  position: relative;
+  overflow: hidden;
+}
+
+.coming-soon-button::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+  transition: 0.5s;
+}
+
+.coming-soon-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 7px 20px rgba(168, 168, 168, 0.4);
+}
+
+.coming-soon-button:hover::after {
+  left: 100%;
+}
+
+/* قائمة المستويات المطورة */
+.levels-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.levels-container {
+  background: white;
+  border-radius: 20px;
+  width: 90%;
+  max-width: 800px;
+  padding: 40px;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+  position: relative;
+  transform-style: preserve-3d;
+  perspective: 1000px;
+}
+
+.levels-container::before {
+  content: '';
+  position: absolute;
+  top: -5px;
+  left: -5px;
+  right: -5px;
+  bottom: -5px;
+  background: linear-gradient(45deg, var(--secondary-color), var(--accent-color));
+  z-index: -1;
+  border-radius: 25px;
+  opacity: 0.7;
+  filter: blur(10px);
+}
+
+.levels-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.levels-header h3 {
+  font-size: 2rem;
+  color: var(--primary-color);
+  margin-bottom: 10px;
+}
+
+.levels-header p {
+  color: var( --light-accent);
+}
+
+.levels-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.level-option {
+  background: var(--light-color);
+  border: 2px solid rgba(86, 105, 135, 0.2);
+  border-radius: 10px;
+  padding: 15px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 600;
+  color: var(--text-dark);
+
+}
+
+.level-option:hover {
+  background: var(--secondary-color);
+  color: white;
+  transform: translateY(-5px);
+  border-color: var(--secondary-color);
+  box-shadow: 0 10px 20px rgba(86, 105, 135, 0.2);
+}
+
+.level-option span {
+  display: block;
+  text-align: center; /* هذه الخاصية تضمن المحاذاة للوسط */
+  width: 100%; /* تأخذ العرض الكامل */
+  margin-top: 8px; /* تباعد من العنصر الأعلى */
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+.close-levels {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: var(--text-light);
+  transition: all 0.3s ease;
+}
+
+.close-levels:hover {
+  color: var(--accent-color);
+  transform: rotate(90deg);
+}
+.page-footer {
+  text-align: center;
+  margin-top: 120px;
+  padding-bottom: 40px;
+  position: relative;
+}
+
+.footer-message,
+.copyright {
+  transition: all 0.3s ease;
+}
+
+/* تأثيرات الظهور الأولي */
+.footer-message {
+  color: var(--text-medium);
+  font-size: 1.1rem;
+  margin-bottom: 8px;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeInUp 0.8s ease-out 0.5s forwards;
+}
+
+.copyright {
+  color: var(--text-light);
+  font-size: 0.8rem;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeInUp 0.8s ease-out 0.7s forwards;
+}
+
+/* تأثير النقر */
+.footer-message:active,
+.copyright:active {
+  background-color: rgba(141, 153, 174, 0.1); /* ظل خفيف عند النقر */
+  border-radius: 4px;
+}
+
+/* تأثيرات الحركة */
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+/* تأثيرات الحركة */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fadeInUp {
+  from { 
+    opacity: 0;
+    transform: translateY(30px) scale(0.9);
+  }
+  to { 
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes cardBounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .game-options {
+    grid-template-columns: 1fr;
+    max-width: 600px;
+  }
+  
+  .game-card {
+    width: 100%;
+  }
+  
+  .levels-grid {
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .chess-mastery {
+    font-size: 2.8rem;
+  }
+  
+  .subtitle {
+    font-size: 1.1rem;
+  }
+  
+  .levels-container {
+    padding: 30px 20px;
+  }
+}

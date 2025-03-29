@@ -1,15 +1,70 @@
 /* src/components/Board.css */
-.board {
+:root {
+  --primary-color: #4a4e69;
+  --secondary-color: #8eaddf;
+  --text-light: #666;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.game-header {
+  text-align: center;
+  margin: 30px 0;
+  width: 100%;
+  animation: fadeIn 0.8s ease-out;
+}
+
+.chess-mastery {
+  font-size: 3.5rem;
+  font-weight: 800;
+  font-family: 'Montserrat', sans-serif;
+  color: var(--primary-color);
+  margin-bottom: 15px;
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  letter-spacing: -1px;
+}
+
+.subtitle {
+  font-size: 1.2rem;
+  font-family: 'Montserrat', sans-serif;
+  color: var(--text-light);
+  max-width: 700px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+
+.board-container {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 100vh;
-  width: 580px; /* عرض اللوحة */
-  height: 580px; /* ارتفاع اللوحة */
-  border: 6px solid #313131; /* خط محيطي */
-  margin: 5% auto; /* توسيط اللوحة */
-  position: relative; /* إضافة هذا لجعل الأزرار مرتبطة باللوحة */
+  flex-grow: 1;
+  width: 100%;
+  position: relative;
+  margin-bottom: 50px;
+
+}
+
+.board {
+  display: flex;
+  flex-direction: column;
+  width: 580px;
+  height: 580px;
+  position: absolute;
+  border: 6px solid #313131;
+  border-image: linear-gradient(to bottom, #4a4e69, #313131) 1;
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
 }
 
 .board-row {
@@ -30,7 +85,7 @@
 }
 
 .square.dark {
-  background-color: #434343;
+  background-color: #4a4e69;
 }
 
 .piece {
@@ -45,9 +100,9 @@
 .available-move {
   width: 30px;
   height: 30px;
-  background-color: rgba(0, 0, 0, 0.3); /* لون الدائرة */
-  border-radius: 50%; /* جعلها دائرية */
-  position: absolute; /* وضعها فوق المربع */
+  background-color: rgba(0, 0, 0, 0.3);
+  border-radius: 50%;
+  position: absolute;
 }
 
 .game-over-message {
@@ -55,7 +110,7 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background-color: rgba(0, 0, 0, 0.9);
+  background-color: #292b3a;
   color: white;
   padding: 20px;
   border-radius: 10px;
@@ -79,7 +134,7 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background-color:#566987;
+  background-color:#292b3a;
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
@@ -105,231 +160,124 @@
   background-color: #e0e0e0;
 }
 
-.home {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100vh;
-  background-color: #000000;
-  font-family: Arial, sans-serif;
-}
-
-.logo {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  margin-bottom: 40px;
-}
-
-.knight {
-  font-size: 400px; /* حجم اللوجو ثابت */
-  color: #ffffff;
-  align-items: center;
+.controls {
   position: absolute;
-  top:10%; /* يضع العنصر عند 80% من الأعلى */
-  left: 37%; /* يضع العنصر في المنتصف أفقيًا */
-  /* transform: translateX(-50%); يعيد ضبط العنصر ليكون في المنتصف بدقة */
-}
-
-.start-button {
-  padding: 15px 30px;
-  font-size: 24px; /* حجم الزر ثابت */
-  color: #252525;
-  background-color: #ccc;
-  border: none;
-  border-radius: 10px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-  position: absolute;
-    top: 80%; /* يضع العنصر عند 80% من الأعلى */
-    left: 50%; /* يضع العنصر في المنتصف أفقيًا */
-    transform: translateX(-50%); /* يعيد ضبط العنصر ليكون في المنتصف بدقة */
-    z-index: -1;
-    border: 4px solid #566987;
-}
-
-.Ai-button{
-  padding: 15px 30px;
-  font-size: 24px; /* حجم الزر ثابت */
-  color: #252525;
-  background-color: #ccc;
-  border: none;
-  border-radius: 10px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-  position: absolute;
-    top: 90%; /* يضع العنصر عند 80% من الأعلى */
-    left: 50%; /* يضع العنصر في المنتصف أفقيًا */
-    transform: translateX(-50%); /* يعيد ضبط العنصر ليكون في المنتصف بدقة */
-    z-index: -1;
-    border: 4px solid #566987;
-}
-
-.start-button:hover {
-  background-color: #999999;
-}
-
-.Ai-button:hover {
-  background-color: #999999;
+  right: -120px;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 .undo-button {
-  position: absolute; /* تغيير من fixed إلى absolute */
-  top: 4%; /* وضع الزر أعلى اللوحة */
-  right: -120px; /* وضع الزر على يمين اللوحة */
   padding: 10px 20px;
   font-size: 16px;
   color: white;
-  background-color: #434343;
+  background-color: #292b3a;
   border: none;
   border-radius: 100px;
   cursor: pointer;
   transition: background-color 0.3s ease;
+  margin-bottom: 10px;
+  display: block;
 }
 
-
 .undo-button:hover:not(:disabled) {
-  background-color: #a9a9a9;
+  background-color: #292b3a;
 }
 
 .redo-button {
-  position: absolute; /* تغيير من fixed إلى absolute */
-  top: 15%; /* وضع الزر أسفل زر التراجع */
-  right: -120px; /* وضع الزر على يمين اللوحة */
   padding: 10px 20px;
   font-size: 16px;
   color: white;
-  background-color: #434343;
+  background-color: #292b3a;
   border: none;
   border-radius: 100px;
   cursor: pointer;
   transition: background-color 0.3s ease;
+  display: block;
 }
 
 .redo-button:disabled {
-  background-color: #434343;
+  background-color: #292b3a;
   cursor: not-allowed;
 }
 
 .redo-button:hover:not(:disabled) {
-  background-color: #a9a9a9;
+  background-color: #292b3a;
 }
 
-/* قائمة مستويات الصعوبة */
-.levels-modal {
-  position: fixed;
-  top: 20px; /* تم تعديله ليظهر في أعلى الصفحة */
-  left: 50%;
-  transform: translateX(-50%); /* تم تعديله ليكون في المنتصف أفقيًا */
-  background-color: #ffffff; /* لون الخلفية */
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-  z-index: 1; /* زيادة z-index لتكون فوق كل العناصر */
-  text-align: center;
-  width: 90%; /* عرض مناسب */
-  max-width: 400px; /* أقصى عرض */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
-.levels-options {
-  display: flex;
-  flex-direction: column; /* عرض العناصر بشكل عمودي */
-  gap: 10px;
-  margin-top: 10px;
-}
-
-.level-option {
-  font-size: 25px;
-  cursor: pointer;
-  padding: 10px;
-  border: 2px solid #000000;
-  border-radius: 5px;
-  background-color: #566987;
-  transition: background-color 0.3s ease;
-}
-
-.level-option:hover {
-  background-color: #ccc; /* لون الخلفية عند التحويم */
-}
-
-.buttons-container {
-  
-  z-index: 1; /* لجعل الأزرار تظهر فوق الشعار */
-  background-color: 434343; /* لون الخلفية للمستطيل */
-
-}
 /* Media Queries للشاشات الصغيرة */
 @media (max-width: 768px) {
+  .game-header {
+    margin: 20px 0;
+  }
+
+  .chess-mastery {
+    font-size: 2.5rem;
+  }
+
+  .subtitle {
+    font-size: 1rem;
+    padding: 0 15px;
+  }
+
   .board {
-      width: 90vw; /* عرض اللوحة يتناسب مع عرض الشاشة */
-      height: 90vw; /* ارتفاع اللوحة يتناسب مع عرض الشاشة */
-      margin: 20% auto; /* توسيط اللوحة */
-      position: absolute;
-      top: 15% ;
-      left: 4%;
+    width: 90vw;
+    height: 90vw;
+    margin: 20px auto;
   }
 
   .square {
-      width: 11.25vw; /* حجم المربع يتناسب مع عرض الشاشة */
-      height: 11.25vw;
+    width: 11.25vw;
+    height: 11.25vw;
   }
 
   .piece {
-      font-size: 10vw; /* حجم القطعة يتناسب مع عرض الشاشة */
+    font-size: 10vw;
   }
 
   .available-move {
-      width: 4.5vw;
-      height: 4.5vw;
+    width: 4.5vw;
+    height: 4.5vw;
+  }
+
+  .controls {
+    position: relative;
+    right: auto;
+    top: auto;
+    transform: none;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 20px;
+  }
+
+  .undo-button,
+  .redo-button {
+    position: static;
+    font-size: 14px;
+    padding: 8px 16px;
   }
 
   .game-over-message {
-      font-size: 5vw;
-      padding: 10px;
+    font-size: 5vw;
+    padding: 10px;
   }
 
   .game-over-message h1 {
-      font-size: 5vw;
+    font-size: 5vw;
   }
 
   .promotion-modal {
-      padding: 10px;
+    padding: 10px;
   }
 
   .promotion-option {
-      font-size: 6vw;
-      padding: 5px;
-  }
-
-  .undo-button {
-      font-size: 3vw;
-      padding: 5px 10px;
-      right: 80%;
-    position: absolute;
-    top: 115%;
-    left: 4%;
-  }
-
-
-  .redo-button {
-      font-size: 3vw;
-      padding: 5px 10px;
-      right: 80%;
-    position: absolute;
-    top: 125%;
-    left: 4%;
-  }
-
-  .knight {
-      position: absolute;
-      top: 2%; /* يضع العنصر عند 80% من الأعلى */
-      left: 50%; /* يضع العنصر في المنتصف أفقيًا */
-      transform: translateX(-50%); /* يعيد ضبط العنصر ليكون في المنتصف بدقة */
-  }
-  
-  .start-button{
-  position: absolute;
-    top: 78%;
+    font-size: 6vw;
+    padding: 5px;
   }
 }
