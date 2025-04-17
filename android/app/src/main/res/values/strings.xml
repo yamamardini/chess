@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">mardini chess</string>
+    <string name="title_activity_main">mardini chess</string>
+    <string name="package_name">com.yamamardini.chess</string>
+    <string name="custom_url_scheme">com.yamamardini.chess</string>
+</resources>

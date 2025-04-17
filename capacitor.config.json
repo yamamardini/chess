@@ -1,0 +1,35 @@
+{
+  "appId": "com.yamamardini.chess",
+  "appName": "mardini chess",
+  "webDir": "dist",
+  "bundledWebRuntime": false,
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 2000,
+      "backgroundColor": "#000000",
+      "showSpinner": false,
+      "androidScaleType": "CENTER_CROP",
+      "splashFullScreen": true,
+      "splashImmersive": true
+    },
+    "Keyboard": {
+      "resize": "body",
+      "style": "dark"
+    }
+  },
+  "android": {
+    "minSdkVersion": 21,
+    "allowMixedContent": true,
+    "webContentsDebuggingEnabled": true
+  },
+  "ios": {
+    "minVersion": "13.0",
+    "scheme": "MardiniChess",
+    "preferredContentMode": "mobile"
+  },
+  "server": {
+    "cleartext": true,
+    "allowNavigation": ["*"]
+  }
+}
+

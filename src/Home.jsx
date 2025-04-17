@@ -160,15 +160,18 @@ const Home = ({ onStartGame, onStartAIGame, onStartOnlineGame }) => {
         >
           <h3>Online Play</h3>
           <p>
-            Real-time matches with players worldwide. 
-            Rankings, tournaments and more (Coming Soon).
+            Play chess with friends in real-time. 
+            Create a game or join with a code.
           </p>
           <button 
-          className="coming-soon-button" 
-          onClick={handleButtonClick}
-          disabled
+            className="play-button"
+            onClick={() => {
+              handleButtonClick();
+              handleGameStart('online');
+            }}
+            disabled={isLoading}
           >
-            Coming Soon
+            {isLoading ? 'Loading...' : 'Play Online'}
           </button>
         </div>
       </div>
@@ -214,14 +217,14 @@ const Home = ({ onStartGame, onStartAIGame, onStartOnlineGame }) => {
         </div>
       )}
 
-<div className="page-footer">
-  <div className="footer-message">
-    Select a game mode to begin your chess journey
-  </div>
-  <div className="copyright">
-    &copy; Yaman Mardini 2025. All rights reserved.
-  </div>
-</div>
+      <div className="page-footer">
+        <div className="footer-message">
+          Select a game mode to begin your chess journey
+        </div>
+        <div className="copyright">
+          &copy; Yaman Mardini 2025. All rights reserved.
+        </div>
+      </div>
     </div>
   );
 };
