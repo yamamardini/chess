@@ -1,11 +1,10 @@
-// Board.js
+// Board.jsx - بدون دوران، فقط قلب القطع السوداء
 import { useState, useEffect, useRef } from 'react';
 import './Board.css';
 import { isCheck, isCheckmate, isStalemate, isMoveValid } from './Checkmate';
 import Pieces from './Pieces';
-import AI from './AI'; // ملف الذكاء الاصطناعي
+import AI from './AI';
 
-// أصوات الشطرنج باستخدام Web Audio API
 const ChessSounds = {
   audioContext: null,
   
@@ -21,7 +20,7 @@ const ChessSounds = {
     const gainNode = this.audioContext.createGain();
     
     oscillator.type = 'sine';
-    oscillator.frequency.value = 440; // A4
+    oscillator.frequency.value = 440;
     gainNode.gain.value = 0.1;
     
     oscillator.connect(gainNode);
@@ -38,7 +37,7 @@ const ChessSounds = {
     const gainNode = this.audioContext.createGain();
     
     oscillator.type = 'square';
-    oscillator.frequency.value = 220; // A3
+    oscillator.frequency.value = 220;
     gainNode.gain.value = 0.2;
     
     oscillator.connect(gainNode);
@@ -75,7 +74,6 @@ const ChessSounds = {
     oscillator.type = isWin ? 'triangle' : 'sine';
     const baseFreq = isWin ? 440 : 220;
     
-    // نغمة انتصار أو خسارة
     oscillator.frequency.setValueAtTime(baseFreq, this.audioContext.currentTime);
     oscillator.frequency.exponentialRampToValueAtTime(
       isWin ? baseFreq * 2 : baseFreq / 2, 
@@ -138,7 +136,6 @@ const Board = ({ isAIMode, aiLevel, aiDelay = 1000 }) => {
   const [isAITurn, setIsAITurn] = useState(false);
   const aiTimerRef = useRef(null);
 
-  // تنظيف المؤقت عند unmount
   useEffect(() => {
     return () => {
       if (aiTimerRef.current) {
@@ -152,14 +149,12 @@ const Board = ({ isAIMode, aiLevel, aiDelay = 1000 }) => {
     if (aiMove) {
       const newBoard = makeMove(board, aiMove.fromRow, aiMove.fromCol, aiMove.toRow, aiMove.toCol);
 
-      // تشغيل الصوت المناسب للحركة
       if (board[aiMove.toRow][aiMove.toCol]) {
         ChessSounds.playCaptureSound();
       } else {
         ChessSounds.playMoveSound();
       }
 
-      // التحقق من الترقية للذكاء الاصطناعي
       const movingPiece = board[aiMove.fromRow][aiMove.fromCol];
       if ((movingPiece === '♙' && aiMove.toRow === 0) || (movingPiece === '♟' && aiMove.toRow === 7)) {
         const promotionPiece = currentPlayer === 'white' ? '♕' : '♛';
@@ -177,8 +172,9 @@ const Board = ({ isAIMode, aiLevel, aiDelay = 1000 }) => {
   useEffect(() => {
     if (isCheckmate(board, currentPlayer)) {
       setIsGameOver(true);
-      setWinner(currentPlayer === 'white' ? 'black' : 'white');
-      ChessSounds.playGameEndSound(currentPlayer !== 'white');
+      const winnerColor = currentPlayer === 'white' ? 'black' : 'white';
+      setWinner(winnerColor);
+      ChessSounds.playGameEndSound(currentPlayer === 'black');
     } else if (isStalemate(board, currentPlayer)) {
       setIsGameOver(true);
       setWinner(null);
@@ -238,7 +234,6 @@ const Board = ({ isAIMode, aiLevel, aiDelay = 1000 }) => {
         }
 
         if (!isCheck(newBoard, currentPlayer)) {
-          // تشغيل الصوت المناسب للحركة
           if (board[row][col]) {
             ChessSounds.playCaptureSound();
           } else {
@@ -260,7 +255,7 @@ const Board = ({ isAIMode, aiLevel, aiDelay = 1000 }) => {
       ) {
         setSelectedPiece([row, col]);
         calculateAvailableMoves(row, col, piece);
-        ChessSounds.playMoveSound(); // صوت عند اختيار قطعة
+        ChessSounds.playMoveSound();
       }
     }
   };
@@ -310,7 +305,6 @@ const Board = ({ isAIMode, aiLevel, aiDelay = 1000 }) => {
   const undoMove = () => {
     if (moveHistory.length === 0) return;
 
-    // عند اللعب ضد الذكاء الاصطناعي، نرجع حركتين (حركة اللاعب وحركة الذكاء الاصطناعي)
     const stepsToUndo = isAIMode && currentPlayer === 'white' ? 2 : 1;
     
     if (moveHistory.length >= stepsToUndo) {
@@ -318,15 +312,12 @@ const Board = ({ isAIMode, aiLevel, aiDelay = 1000 }) => {
       const newRedoHistory = [...redoHistory];
       const currentState = { board: JSON.parse(JSON.stringify(board)), player: currentPlayer };
 
-      // إضافة الحالة الحالية إلى redoHistory
       newRedoHistory.push(currentState);
 
-      // إضافة حركة الذكاء الاصطناعي السابقة إذا لزم الأمر
       if (stepsToUndo > 1) {
         newRedoHistory.push(newMoveHistory.pop());
       }
 
-      // الحصول على الحالة التي نريد العودة إليها
       const targetState = newMoveHistory.pop();
 
       setBoard(targetState.board);
@@ -354,14 +345,25 @@ const Board = ({ isAIMode, aiLevel, aiDelay = 1000 }) => {
     const piece = board[row][col];
     const isSelected = selectedPiece && selectedPiece[0] === row && selectedPiece[1] === col;
     const isAvailable = availableMoves.some(([r, c]) => r === row && c === col);
-    const isKingInCheck = kingInCheck && kingInCheck[0] === row && kingInCheck[1] === col;
+    const isKingInCheckSquare = kingInCheck && kingInCheck[0] === row && kingInCheck[1] === col;
+    
+    // تحديد إذا كانت القطعة سوداء ويجب قلبها
+    const isBlackPieceToFlip = isBlackPiece(piece) && !isAIMode;
+    
     return (
       <div
         key={`${row}-${col}`}
-        className={`square ${squareColor} ${isSelected ? 'selected' : ''} ${isKingInCheck ? 'king-in-check' : ''}`}
+        className={`square ${squareColor} ${isSelected ? 'selected' : ''} ${isKingInCheckSquare ? 'king-in-check' : ''}`}
         onClick={() => handleSquareClick(row, col)}
       >
-        {piece && <span className="piece">{piece}</span>}
+        {piece && (
+          <span 
+            className="piece" 
+            style={isBlackPieceToFlip ? { transform: 'rotate(180deg)', display: 'inline-block' } : {}}
+          >
+            {piece}
+          </span>
+        )}
         {isAvailable && <div className="available-move"></div>}
       </div>
     );
@@ -394,17 +396,22 @@ const Board = ({ isAIMode, aiLevel, aiDelay = 1000 }) => {
                 ? 'Game Over! The Winner is: AI'
                 : 'Draw!'
               : winner === 'white'
-              ? 'Game Over! The Winner is: white'
+              ? 'Game Over! The Winner is: White'
               : winner === 'black'
-              ? 'Game Over! The Winner is: black'
+              ? 'Game Over! The Winner is: Black'
               : 'Draw!'}
           </h1>
         </div>
       )}
+      
       {promotion && (
         <Promotion currentPlayer={currentPlayer} onSelectPiece={handlePromotion} />
       )}
-      {Array.from({ length: 8 }, (_, row) => renderRow(row))}
+      
+      <div className="board">
+        {Array.from({ length: 8 }, (_, row) => renderRow(row))}
+      </div>
+      
       <div className="controls">
         <button onClick={undoMove} disabled={moveHistory.length === 0} className='undo-button'>Undo</button>
         <button onClick={redoMove} disabled={redoHistory.length === 0} className='redo-button'>Redo</button>

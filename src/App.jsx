@@ -1,3 +1,4 @@
+// App.jsx (لا يتغير - للتأكيد فقط)
 import { useState } from 'react';
 import Home from './Home';
 import Board from './Board';
@@ -5,7 +6,7 @@ import OnlineLobby from './OnlineLobby';
 import OnlineGame from './OnlineGame';
 
 const App = () => {
-  const [gameMode, setGameMode] = useState('home'); // 'home', 'local', 'ai', 'online-lobby', 'online-game'
+  const [gameMode, setGameMode] = useState('home');
   const [aiLevel, setAiLevel] = useState(1);
   const [onlineGameCode, setOnlineGameCode] = useState('');
   const [playerName, setPlayerName] = useState('');
@@ -45,14 +46,14 @@ const App = () => {
       
       {gameMode === 'local' && (
         <Board 
-          isAIMode={false}
+          isAIMode={false}  // هنا اللوحة ستقلب تلقائياً
           onExit={() => setGameMode('home')}
         />
       )}
       
       {gameMode === 'ai' && (
         <Board 
-          isAIMode={true}
+          isAIMode={true}   // هنا اللوحة لن تقلب (تبقى كما هي)
           aiLevel={aiLevel}
           onExit={() => setGameMode('home')}
         />

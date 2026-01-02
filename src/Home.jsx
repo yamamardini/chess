@@ -222,7 +222,7 @@ const Home = ({ onStartGame, onStartAIGame, onStartOnlineGame }) => {
           Select a game mode to begin your chess journey
         </div>
         <div className="copyright">
-          &copy; Yaman Mardini 2025. All rights reserved.
+          &copy; Yaman Mardini 2025_2026. All rights reserved.
         </div>
       </div>
     </div>

@@ -59,7 +59,6 @@ body {
   flex-direction: column;
   width: 580px;
   height: 580px;
-  position: absolute;
   border: 6px solid #313131;
   border-image: linear-gradient(to bottom, #4a4e69, #313131) 1;
   box-shadow: 
@@ -93,6 +92,8 @@ body {
 .piece {
   font-size: 60px;
   cursor: pointer;
+  display: block;
+  line-height: 1;
 }
 
 .square.selected {
@@ -182,11 +183,11 @@ body {
   border-radius: 100px;
   cursor: pointer;
   transition: all 0.3s ease;
-  width: 100px; /* جعل العرض ثابتًا لكلا الزرين */
+  width: 100px;
   text-align: center;
   margin-bottom: 10px;
   display: block;
-  box-sizing: border-box; /* للتأكد أن الحشو لا يؤثر على العرض الكلي */
+  box-sizing: border-box;
 }
 
 .undo-button {
@@ -296,18 +297,18 @@ body {
     right: auto;
     top: auto;
     transform: none;
-    flex-direction: row; /* تغيير إلى صف أفقي للشاشات الصغيرة */
+    flex-direction: row;
     justify-content: center;
-    gap: 10px; /* استخدام gap بدلاً من margin للتباعد */
+    gap: 10px;
     margin-top: 20px;
   }
 
   .undo-button,
   .redo-button {
-    width: 100px; /* نفس العرض للشاشات الصغيرة */
+    width: 100px;
     padding: 8px 16px;
     font-size: 14px;
-    margin-bottom: 0; /* إزالة الهامش السفلي لأننا نستخدم gap الآن */
+    margin-bottom: 0;
   }
 
   .game-over-message {
